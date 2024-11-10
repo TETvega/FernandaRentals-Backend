@@ -1,0 +1,6 @@
+@FernandaRentals_HostAddress = http://localhost:5183
+
+GET {{FernandaRentals_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
