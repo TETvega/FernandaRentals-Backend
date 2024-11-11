@@ -1,0 +1,19 @@
+meta {
+  name: GetEventById
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{PATH}}/eventos/{{EVENT_ID}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{TOKEN}}
+}
+
+vars:pre-request {
+  EVENT_ID: 1105033f-50b8-470e-7d74-08dd000e0733
+}
