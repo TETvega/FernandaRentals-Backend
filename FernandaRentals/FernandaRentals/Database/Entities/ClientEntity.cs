@@ -1,12 +1,19 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using InmobiliariaUNAH.Database.Entities;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FernandaRentals.Database.Entities
 {
     [Table("clients", Schema = "dbo")]
-    public class ClientEntity: BaseEntity
+    public class ClientEntity: AuditEntity
     {
+        [Key]
+        [Display(Name = "Id")]
+        [Required(ErrorMessage = "El {0} es Requerido")]
+        [Column("id")]
+        public Guid Id { get; set; }
+
 
         [Display(Name = "Usuario Id")]
         [Required(ErrorMessage = "El {0} es requerido.")]

@@ -1,43 +1,44 @@
 ﻿using FernandaRentals.Constants;
 using FernandaRentals.Services.Interfaces;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace FernandaRentals.Services
 {
     public class AuditService:IAuditService
     {
-        /// <summary>
-        /// Aqui se da parte de la Autentificacion del Usuario 
-        /// </summary>
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public AuditService(IHttpContextAccessor httpContextAccessor)
+        private readonly TokenValidationParameters _tokenValidationParameters;
+
+        public AuditService(
+            IHttpContextAccessor httpContextAccessor,
+            TokenValidationParameters tokenValidationParameters)
         {
             _httpContextAccessor = httpContextAccessor;
+            _tokenValidationParameters = tokenValidationParameters;
         }
 
         public string GetUserId()
         {
-            // Posibles Errores
-            if (_httpContextAccessor.HttpContext == null)
-            {
-                throw new Exception("HttpContext no está disponible.");
-            }
+            var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
-            var user = _httpContextAccessor.HttpContext.User;
-            // Verificacion de Autentificacion del Usuario
-            if (!user.Identity.IsAuthenticated)
-            {
-                throw new Exception($"{MessagesConstant.UNAUTHENTICATED_USER_ERROR}");
-            }
+            if (string.IsNullOrEmpty(token))
+                return null;
 
-            var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            // Verificacion de las Claims
-            if (userId == null)
+            var handler = new JwtSecurityTokenHandler();
+            try
             {
-                throw new Exception($"{MessagesConstant.MISSING_CLAIMS_ERROR}");
-            }
+                var claimsPrincipal = handler.ValidateToken(token, _tokenValidationParameters, out _);
+                var userIdClaim = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == "UserId");
 
-            return userId;
+                return userIdClaim?.Value;
+            }
+            catch (Exception)
+            {
+                // Opcional: Log o manejo de errores de validación del token.
+                return null;
+            }
         }
 
     }

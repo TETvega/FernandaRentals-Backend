@@ -1,7 +1,7 @@
 ﻿using FernandaRentals.Database.Entities;
 using FernandaRentals.Dtos.CategoriesProduct;
 using FernandaRentals.Dtos.ClientType;
-using FernandaRentals.Dtos.common;
+using FernandaRentals.Dtos.Common;
 using FernandaRentals.Services;
 using FernandaRentals.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;

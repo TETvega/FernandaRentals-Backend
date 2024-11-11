@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FernandaRentals.Database.Entities
 {
-    [Table("category_product", Schema = "dbo")]
+    [Table("categories_product", Schema = "dbo")]
     public class CategoryProductEntity : BaseEntity
     {
         [Display(Name = "Descripción")]

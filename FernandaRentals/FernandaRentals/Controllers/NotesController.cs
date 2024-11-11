@@ -1,4 +1,4 @@
-﻿using FernandaRentals.Dtos.common;
+﻿using FernandaRentals.Dtos.Common;
 using FernandaRentals.Dtos.Notes;
 using FernandaRentals.Dtos.Products;
 using FernandaRentals.Services;

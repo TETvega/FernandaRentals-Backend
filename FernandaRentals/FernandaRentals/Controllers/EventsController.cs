@@ -1,5 +1,5 @@
 ﻿using FernandaRentals.Constants;
-using FernandaRentals.Dtos.common;
+using FernandaRentals.Dtos.Common;
 using FernandaRentals.Dtos.Events;
 using FernandaRentals.Dtos.Products;
 using FernandaRentals.Services;
@@ -35,9 +35,16 @@ namespace FernandaRentals.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-      [HttpPost]
-        //[Authorize(Roles = $"{RolesConstant.CLIENT}")]
-        //[Authorize(Roles = $"{RolesConstant.ADMIN}")]
+        [HttpGet("my-events")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<EventDto>>> GetEventsByUserId()
+        {
+            var response = await _eventService.GetAllEventsByUserIdAsync();
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = $"{RolesConstants.ADMIN}, {RolesConstants.CLIENT}")]
         [AllowAnonymous]
         public async Task<ActionResult<ResponseDto<EventDto>>> CreateEvent(EventCreateDto dto)
         {
@@ -47,7 +54,7 @@ namespace FernandaRentals.Controllers
 
 
         [HttpPut("{id}")]
-        [Authorize(Roles = $"{RolesConstant.ADMIN}, {RolesConstant.CLIENT}")]
+        [Authorize(Roles = $"{RolesConstants.ADMIN}, {RolesConstants.CLIENT}")]
         public async Task<ActionResult<ResponseDto<EventDto>>> Edit(EventEditDto dto, Guid id)
         {
             var response = await _eventService.EditEventAsync(dto, id);
@@ -61,7 +68,7 @@ namespace FernandaRentals.Controllers
         }
 
         [HttpDelete("{Id}")]
-        [Authorize(Roles = $"{RolesConstant.ADMIN}, {RolesConstant.CLIENT}")]
+        [Authorize(Roles = $"{RolesConstants.ADMIN}, {RolesConstants.CLIENT}")]
         public async Task<ActionResult<ResponseDto<EventDto>>> CancelEvent(Guid id)
         {
             var response = await _eventService.CancelEventAsync(id);

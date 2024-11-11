@@ -1,20 +1,12 @@
 using FernandaRentals;
 using FernandaRentals.Database;
 using FernandaRentals.Database.Entities;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
-
-
-// Inicializacion del Proyecto mediante el Startup
-
-var startup = new Startup(builder.Configuration);
-
+var startup = new Startup(builder.Configuration); // Inicializacion del Proyecto mediante el Startup
 startup.ConfigureServices(builder.Services);
-
 var app = builder.Build();
-
 startup.Configure(app, app.Environment);
 
 using (var scope = app.Services.CreateScope())
@@ -35,7 +27,6 @@ using (var scope = app.Services.CreateScope())
         var logger = loggerFactory.CreateLogger<Program>();
         logger.LogError(e, "Error al ejecutar el Seed de datos");
     }
-
 }
 
 app.Run();

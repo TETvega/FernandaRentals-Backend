@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FernandaRentals.Database.Entities
 {
-    [Table("reservation", Schema = "dbo")]
+    [Table("product_reservations", Schema = "dbo")]
     public class ReservationEntity : BaseEntity
     {
         [Display(Name = "Producto Id")]

@@ -90,7 +90,7 @@ namespace FernandaRentals.Services
             var noteEntity = _mapper.Map<NoteEntity>(dto);
 
             // para ver que no se repita el titulo
-            var existingNote = await _context.Notes.FirstOrDefaultAsync(n => n.Title.ToLower().Trim() == noteEntity.Title.ToLower().Trim());
+            var existingNote = await _context.Notes.FirstOrDefaultAsync(n => n.Name.ToLower().Trim() == noteEntity.Name.ToLower().Trim());
             if (existingNote != null)
             {
                 return new ResponseDto<NoteDto>

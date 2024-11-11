@@ -2,6 +2,7 @@
 using FernandaRentals.Database.Configuration;
 using FernandaRentals.Database.Entities;
 using FernandaRentals.Services.Interfaces;
+using InmobiliariaUNAH.Database.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -42,15 +43,25 @@ namespace FernandaRentals.Database
             modelBuilder.Entity<IdentityUserToken<string>>().ToTable("users_tokens");
 
             //Aplicacion de las Configuraciones de Entidades
-            modelBuilder.ApplyConfiguration(new ClientConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryProductConfiguration());
             modelBuilder.ApplyConfiguration(new ClienTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new DetailConfiguration());
-            modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new EventConfiguration());
             modelBuilder.ApplyConfiguration(new NoteConfiguraction());
             modelBuilder.ApplyConfiguration(new ReservationConfiguration());
+            modelBuilder.ApplyConfiguration(new DetailConfiguration());
+            modelBuilder.ApplyConfiguration(new ClientConfiguration());
 
+            // Set Foreign Keys OnRestrict
+            var eTypes = modelBuilder.Model.GetEntityTypes(); // todo el listado de entidades
+            foreach (var type in eTypes)
+            {
+                var foreignKeys = type.GetForeignKeys();
+                foreach (var fk in foreignKeys)
+                {
+                    fk.DeleteBehavior = DeleteBehavior.Restrict;
+                }
+            }
 
 
             // las configuraciones en decimales ahora se realizan en el archivo de Configuracion
@@ -98,14 +109,14 @@ namespace FernandaRentals.Database
         {
             var entries = ChangeTracker
                 .Entries()
-                .Where(e => e.Entity is BaseEntity && (
+                .Where(e => e.Entity is AuditEntity && (
                     e.State == EntityState.Added ||
                     e.State == EntityState.Modified
                 ));
 
             foreach (var entry in entries)
             {
-                var entity = entry.Entity as BaseEntity;
+                var entity = entry.Entity as AuditEntity;
                 if (entity != null)
                 {
                     // si esta agregando o creando 

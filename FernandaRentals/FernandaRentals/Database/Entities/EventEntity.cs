@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FernandaRentals.Database.Entities
 {
-    [Table("event", Schema = "dbo")]
+    [Table("events", Schema = "dbo")]
     public class EventEntity : BaseEntity
     {
 

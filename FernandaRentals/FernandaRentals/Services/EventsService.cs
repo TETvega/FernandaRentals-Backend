@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FernandaRentals.Constants;
 using FernandaRentals.Database;
 using FernandaRentals.Database.Entities;
 using FernandaRentals.Dtos.Common;
@@ -7,6 +8,7 @@ using FernandaRentals.Dtos.Events.Helper_Dto;
 using FernandaRentals.Dtos.Notes;
 using FernandaRentals.Dtos.Products;
 using FernandaRentals.Services.Interfaces;
+using InmobiliariaUNAH.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
@@ -44,7 +46,7 @@ namespace FernandaRentals.Services
         {
             var eventsEntity = await _context.Events
             .Include(e => e.EventDetails)
-            .ThenInclude(ed => ed.Product) 
+            .ThenInclude(ed => ed.Product)
             .ToListAsync();
 
 
@@ -59,6 +61,36 @@ namespace FernandaRentals.Services
             };
         }
 
+        // TODO: New Method: GetAllEventsByUserIdAsync
+        public async Task<ResponseDto<List<EventDto>>> GetAllEventsByUserIdAsync()
+        {
+            var userId = _auditService.GetUserId();
+            if (userId is null) return ResponseHelper.ResponseError<List<EventDto>>(404, "No se encontró el id del usuario.");
+
+            var userEntity = await _userManager.FindByIdAsync(userId);
+            if (userEntity is null) return ResponseHelper.ResponseError<List<EventDto>>(404, "No se encontró el usuario.");
+
+            var clientEntity = await _context.Clients.FirstOrDefaultAsync(c => c.UserId == userId);
+            if (clientEntity is null) return ResponseHelper.ResponseError<List<EventDto>>(404, "El cliente no ha sido encontrado.");
+
+            var eventsEntity = await _context.Events
+                .Include(e => e.Client)
+                .Include(e => e.EventDetails)
+                    .ThenInclude(ed => ed.Product)
+                .Where(e => e.ClientId == clientEntity.Id)
+                .ToListAsync();
+
+            var eventsDto = _mapper.Map<List<EventDto>>(eventsEntity);
+
+            return new ResponseDto<List<EventDto>>
+            {
+                StatusCode = 200,
+                Status = true,
+                Message = $"Listado de eventos de {userEntity.Name}obtenida correctamente",
+                Data = eventsDto
+            };
+        }
+
         public async Task<ResponseDto<EventDto>> GetEventById(Guid id)
         {
             var eventEntity = await _context.Events
@@ -67,27 +99,15 @@ namespace FernandaRentals.Services
             .ThenInclude(ed => ed.Product)
             .FirstOrDefaultAsync(ev => ev.Id == id);
 
-            if (eventEntity == null)
-            {
-                return new ResponseDto<EventDto>
-                {
-                    StatusCode = 404,
-                    Status = false,
-                    Message = "No se encontró el evento",
-                };
-            }
+            if (eventEntity == null) return ResponseHelper.ResponseError<EventDto>(404, "No se encontró el evento");
 
             var eventDto = _mapper.Map<EventDto>(eventEntity);
+            var clientEntity = await _context.Clients.FirstOrDefaultAsync(c => c.Id == eventEntity.ClientId);
+            eventDto.UserId = Guid.Parse(clientEntity.UserId);
 
-            return new ResponseDto<EventDto>
-            {
-                StatusCode = 200,
-                Status = true,
-                Message = "Listado de eventos obtenida correctamente",
-                Data = eventDto
-            };
+            return ResponseHelper.ResponseSuccess<EventDto>(200, "Listado de eventos obtenida correctamente", eventDto);
         }
-     
+
         public async Task<ResponseDto<EventDto>> CreateEvent(EventCreateDto dto)
         {
             var userId = _auditService.GetUserId();
@@ -111,18 +131,18 @@ namespace FernandaRentals.Services
                 };
             }
 
-            var clientEntity = await _context.Clients.FirstOrDefaultAsync(c => c.UserId == userId);
-            var clientTypeEntity = await _context.TypesOfClient.FindAsync(clientEntity.ClientTypeId);
-            
+            var clientEntity = await _context.Clients.FirstOrDefaultAsync(c => c.UserId == userId); // TODO: Agregar validaciones de existencia
+            var clientTypeEntity = await _context.TypesOfClient.FindAsync(clientEntity.ClientTypeId); // id cliente
+
             var eventEntity = _mapper.Map<EventEntity>(dto);
-            eventEntity.ClientId = clientEntity.ClientTypeId;
+            eventEntity.ClientId = clientEntity.Id;
 
             ///// validacion si existen los productos
             var existingProducts = await _context.Products.ToListAsync();
             var productIdsInDto = dto.Productos.Select(p => p.ProductId).ToList();
 
             // anner esta es para ver cuales no existen 
-            // el any es si alguno de los de la tabla existen entoncess es un si , el ! es si almenos uno de ellos NO existe en la tabla
+            // el ANY es "si alguno de los de la tabla existen" entoncess es un si , el ! es si al menos uno de ellos NO existe en la tabla
             //Productos que están presentes en el DTO pero no existen en la base de datos.
             var ProductsNoExistentes = productIdsInDto
                 .Where(dtoProductId => !existingProducts.Any(eP => eP.Id == dtoProductId))
@@ -134,13 +154,13 @@ namespace FernandaRentals.Services
             if (ProductosNoExistentesdelDto > 0)
             {
                 return ExeptionProductosNoExistentes(ProductsNoExistentes);
-               
+
             }
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
 
                 try
-                {   
+                {
 
                     await _context.Events.AddAsync(eventEntity);
                     await _context.SaveChangesAsync();
@@ -148,7 +168,7 @@ namespace FernandaRentals.Services
                     // Todas las Reservaciones que coinciden con los id de productos existentes
                     // Se obtienen todas las reservas que coinciden con los IDs de productos proporcionados en la solicitud. Para verificar las reservas existentes que puedan afectar el stock de los productos.
                     var ExistinReservations = await _context.Reservations
-                        .Where(reservation => productIdsInDto.Contains(reservation.ProductId)) 
+                        .Where(reservation => productIdsInDto.Contains(reservation.ProductId))
                         .ToListAsync();
 
                     DateTime startDate = dto.StartDate.Date;
@@ -161,18 +181,18 @@ namespace FernandaRentals.Services
                     }
 
                     var newReservations = new List<ReservationEntity>();
-                    var errorMesagesValidacionProductos =await  ValidacionDeProductosFechas(startDate, endDate, dto.Productos, newReservations, ExistinReservations ,eventEntity, existingProducts);
-                    if(errorMesagesValidacionProductos.Length > 0)
-                    return new ResponseDto<EventDto>
-                    {
-                        StatusCode = 405,
-                        Status = false,
-                        Message = errorMesagesValidacionProductos,
-                    };
+                    var errorMesagesValidacionProductos = await ValidacionDeProductosFechas(startDate, endDate, dto.Productos, newReservations, ExistinReservations, eventEntity, existingProducts);
+                    if (errorMesagesValidacionProductos.Length > 0)
+                        return new ResponseDto<EventDto>
+                        {
+                            StatusCode = 405,
+                            Status = false,
+                            Message = errorMesagesValidacionProductos,
+                        };
 
 
                     // guardar todos los cambios 
-                    await _context.Reservations.AddRangeAsync( newReservations );
+                    await _context.Reservations.AddRangeAsync(newReservations);
                     await _context.SaveChangesAsync();
 
                     // para obtener los detalles y el costo del evento 
@@ -189,7 +209,7 @@ namespace FernandaRentals.Services
 
                     // TODO EL DESCUENTO NECESITAMOS SABER QUIEN ES EL QUE MANDA ESTO 
 
-               
+
                     var discount = eventEntity.Discount = ((eventEntity.EventCost) * (clientTypeEntity.Discount));
                     eventEntity.Total = eventEntity.EventCost - discount;
 
@@ -198,14 +218,13 @@ namespace FernandaRentals.Services
                     await transaction.CommitAsync();
 
                     var eventDto = _mapper.Map<EventDto>(eventEntity);
-
+                    eventDto.UserId = Guid.Parse(userEntity.Id);
                     return new ResponseDto<EventDto>
                     {
                         StatusCode = 200,
                         Status = true,
                         Message = "Exito al CREAR UN EVENTO",
                         Data = eventDto
-                        
                     };
 
                 }
@@ -230,48 +249,31 @@ namespace FernandaRentals.Services
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 var CheckEventEntity = await _context.Events.FirstOrDefaultAsync(e => e.Id == id);
-
                 if (CheckEventEntity is null)
-                {
-                    return new ResponseDto<EventDto>
-                    {
-                        StatusCode = 404,
-                        Status = false,
-                        Message = $"El evento a editar no fue encontrado."
-                    };
-                }
-                var userId = _auditService.GetUserId();
-                if (userId == null)
-                {
-                    return new ResponseDto<EventDto>
-                    {
-                        StatusCode = 404,
-                        Status = true,
-                        Message = "Error al obtener Id del usuario"
-                    };
-                }
-                var userEntity = await _userManager.FindByIdAsync(userId);
-                if (userEntity is null)
-                {
-                    return new ResponseDto<EventDto>
-                    {
-                        StatusCode = 404,
-                        Status = true,
-                        Message = "Error al recuperar usuario"
-                    };
-                }
+                    return ResponseHelper.ResponseError<EventDto>(404, "El evento a editar no fue encontrado.");// Se creó esta funcion para ahorrar lineas de codigo. TODO: Aplicar en demás servicios.            
 
-                var clientEntity = await _context.Clients.FirstOrDefaultAsync(c => c.UserId == userId);
+                var userIdFromAuditService = _auditService.GetUserId();
+                if (userIdFromAuditService == null) return ResponseHelper.ResponseError<EventDto>(404, "Error al obtener Id del usuario.");
+
+                var userEntity = await _userManager.FindByIdAsync(userIdFromAuditService); // extraer userEntity apartir del id que retorna GetUserId()
+                if (userEntity is null) return ResponseHelper.ResponseError<EventDto>(404, "Error al recuperar usuario de la base de datos.");
+
+
+                var userRoles = await _userManager.GetRolesAsync(userEntity); // Obtener roles de userEntity
+
+                var clientEntity = await _context.Clients.FirstOrDefaultAsync(c => c.Id == CheckEventEntity.ClientId); // buscar clientEntity para usar el UserId
+                if (clientEntity is null) return ResponseHelper.ResponseError<EventDto>(404, "Cliente asociado al evento no encontrado.");
+
+                if ((!userRoles.Contains(RolesConstants.ADMIN)) && (userIdFromAuditService != clientEntity.UserId))  // si el usuario que está haciendo la peticion no es rol ADMIN & no es el Cliente que creo el evento, return.
+                    return ResponseHelper.ResponseError<EventDto>(404, "No estás autorizado para editar o cancelar este evento.");
+                // Termina validacion Inicial.
+
                 var clientTypeEntity = await _context.TypesOfClient.FindAsync(clientEntity.ClientTypeId);
+                if (clientTypeEntity is null) return ResponseHelper.ResponseError<EventDto>(404, "Este evento no te pertenece. Solo puedes editar o cancelar tus eventos."); // !! Suponiendo que el usuaerio ADMIN no está vinculado a un Cliente
 
+                DateTime startDate = dto.StartDate.Date; DateTime endDate = dto.EndDate.Date;
+                if (ValidarFechas(startDate, endDate) != null) return ValidarFechas(startDate, endDate);
 
-                DateTime startDate = dto.StartDate.Date;
-                DateTime endDate = dto.EndDate.Date;
-                var validacionFechasResult = ValidarFechas(startDate, endDate);
-                if (validacionFechasResult != null)
-                {
-                    return validacionFechasResult;
-                }
                 var existingProducts = await _context.Products.ToListAsync();
                 var productIdsInDto = dto.Productos.Select(p => p.ProductId).ToList();
 
@@ -282,15 +284,13 @@ namespace FernandaRentals.Services
 
                 // Compartido
                 var ProductosNoExistentesdelDto = ProductsNoExistentes.Count();
-                if (ProductosNoExistentesdelDto > 0)
-                {
-                    return ExeptionProductosNoExistentes(ProductsNoExistentes);
-
-                }
+                if (ProductosNoExistentesdelDto > 0) return ExeptionProductosNoExistentes(ProductsNoExistentes);
                 ///
                 try
                 {
                     var eventEntity = _mapper.Map(dto, CheckEventEntity); // Actualiza el evento existente                                                         
+                    eventEntity.ClientId = clientEntity.Id;
+
                     _context.Events.Update(eventEntity);
                     await _context.SaveChangesAsync();
 
@@ -307,14 +307,8 @@ namespace FernandaRentals.Services
                         .ToListAsync();
 
                     var newReservations = new List<ReservationEntity>();
-                    var errorMesagesValidacionProductos =await ValidacionDeProductosFechas(startDate, endDate, dto.Productos, newReservations, ExistinReservations, eventEntity, existingProducts);
-                    if (errorMesagesValidacionProductos.Length > 0)
-                        return new ResponseDto<EventDto>
-                        {
-                            StatusCode = 405,
-                            Status = false,
-                            Message = errorMesagesValidacionProductos,
-                        };
+                    var errorMesagesValidacionProductos = await ValidacionDeProductosFechas(startDate, endDate, dto.Productos, newReservations, ExistinReservations, eventEntity, existingProducts);
+                    if (errorMesagesValidacionProductos.Length > 0) return ResponseHelper.ResponseError<EventDto>(405, errorMesagesValidacionProductos);
 
 
                     await _context.Reservations.AddRangeAsync(newReservations);
@@ -328,34 +322,30 @@ namespace FernandaRentals.Services
 
                     eventEntity.EventCost = eventCost;
 
-                   
+
                     var discount = eventEntity.Discount = ((eventEntity.EventCost) * (clientTypeEntity.Discount));
                     eventEntity.Total = eventEntity.EventCost - discount;
 
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
-                  //  var eventDto = _mapper.Map<EventDto>(eventEntity);
+                    var eventDto = _mapper.Map<EventDto>(eventEntity);
                     return new ResponseDto<EventDto>
                     {
                         StatusCode = 200,
                         Status = true,
                         Message = "Exito al EDITAR UN EVENTO",
-                        //Data = eventDto
+                        Data = eventDto
                     };
                 }
                 catch (Exception e)
                 {
                     await transaction.RollbackAsync();
                     _logger.LogError(e, "Error al editar el evento en el try.");
-                    return new ResponseDto<EventDto>
-                    {
-                        StatusCode = 500,
-                        Status = false,
-                        Message = "Error al editar el evento."
-                    };
+                    return ResponseHelper.ResponseError<EventDto>(500, "Error al editar el evento.");
                 }
             }
         }
+
 
         public async Task<ResponseDto<EventDto>> CancelEventAsync(Guid id)
         {
@@ -364,15 +354,23 @@ namespace FernandaRentals.Services
                 try
                 {
                     var eventEntity = await _context.Events.FindAsync(id);
-                    if (eventEntity is null)
-                    {
-                        return new ResponseDto<EventDto>
-                        {
-                            StatusCode = 404,
-                            Status = false,
-                            Message = $"No se encontró el Evento con el id: {id}"
-                        };
-                    }
+                    if (eventEntity is null) return ResponseHelper.ResponseError<EventDto>(404, $"No se encontró el Evento con el id: {id}");
+
+                    var userIdFromAuditService = _auditService.GetUserId();
+                    if (userIdFromAuditService == null) return ResponseHelper.ResponseError<EventDto>(404, "Error al obtener Id del usuario.");
+
+                    var userEntity = await _userManager.FindByIdAsync(userIdFromAuditService); // extraer userEntity apartir del id que retorna GetUserId()
+                    if (userEntity is null) return ResponseHelper.ResponseError<EventDto>(404, "Error al recuperar usuario de la base de datos.");
+
+
+                    var userRoles = await _userManager.GetRolesAsync(userEntity); // Obtener roles de userEntity
+
+                    var clientEntity = await _context.Clients.FirstOrDefaultAsync(c => c.Id == eventEntity.ClientId); // buscar clientEntity para usar el UserId
+                    if (clientEntity is null) return ResponseHelper.ResponseError<EventDto>(404, "Cliente asociado al evento no encontrado.");
+
+                    if ((!userRoles.Contains(RolesConstants.ADMIN)) && (userIdFromAuditService != clientEntity.UserId))  // si el usuario que está haciendo la peticion no es rol ADMIN & no es el Cliente que creo el evento, return.
+                        return ResponseHelper.ResponseError<EventDto>(401, "No estás autorizado para editar o cancelar este evento.");
+
                     _context.Events.Remove(eventEntity);
                     await _context.SaveChangesAsync();
 
@@ -416,72 +414,71 @@ namespace FernandaRentals.Services
           IEnumerable<ReservationEntity> ExistinReservations,
           EventEntity eventEntity,
           List<ProductEntity> existingProducts)
+        {
+            var errorMessages2 = new StringBuilder();
+            var productosData = await _context.Products.ToListAsync();
+            for (var date = startDate; date <= endDate; date = date.AddDays(1))
             {
-                var errorMessages2 = new StringBuilder();
-                 var productosData = await _context.Products.ToListAsync();
-                for (var date = startDate; date <= endDate; date = date.AddDays(1))
+                foreach (var product in productos)
                 {
-                    foreach (var product in productos)
+                    var productId = product.ProductId;
+                    var CantidadSolicitada = product.Quantity;
+
+                    // para calcular la cantidad de producto en una fecha especifica
+                    var existingTotalCount = ExistinReservations
+                        .Where(reservation => reservation.ProductId == productId && reservation.Date == date)
+                        .Sum(reservation => reservation.Count);
+
+                    var productEntityIteracion = existingProducts.FirstOrDefault(p => p.Id == productId);
+                    var StockProductoIteracion = productEntityIteracion?.Stock ?? 0;
+
+                    // verificacion de los de reserva contra el stock
+                    if (existingTotalCount + CantidadSolicitada <= StockProductoIteracion)
                     {
-                        var productId = product.ProductId;
-                        var CantidadSolicitada = product.Quantity;
-
-                        // para calcular la cantidad de producto en una fecha especifica
-                        var existingTotalCount = ExistinReservations
-                            .Where(reservation => reservation.ProductId == productId && reservation.Date == date)
-                            .Sum(reservation => reservation.Count);
-
-                        var productEntityIteracion = existingProducts.FirstOrDefault(p => p.Id == productId);
-                        var StockProductoIteracion = productEntityIteracion?.Stock ?? 0;
-
-                        // verificacion de los de reserva contra el stock
-                        if (existingTotalCount + CantidadSolicitada <= StockProductoIteracion)
+                        newReservations.Add(new ReservationEntity
                         {
-                            newReservations.Add(new ReservationEntity
-                            {
-                                ProductId = productId,
-                                EventId = eventEntity.Id,
-                                Date = date,
-                                Count = CantidadSolicitada,
-                                Name = eventEntity.Name,
-                            });
-                        }
-                        else
-                        {
+                            ProductId = productId,
+                            EventId = eventEntity.Id,
+                            Date = date,
+                            Count = CantidadSolicitada,
+                            Name = eventEntity.Name,
+                        });
+                    }
+                    else
+                    {
                         var productoEnData = productosData.FirstOrDefault(p => p.Id == productId);
-                            errorMessages2.AppendLine($"El producto {
-                               productoEnData.Name
-                                } no tiene suficiente stock para la fecha {date.ToShortDateString()}.");
-                        }
+                        errorMessages2.AppendLine($"El producto {productoEnData.Name} no tiene suficiente stock para la fecha {date.ToShortDateString()}.");
                     }
                 }
+            }
 
-                // Si hay error los devuelve en cadena de string y si no un string vacio asi ""
-                return errorMessages2.Length > 0 ? errorMessages2.ToString().Replace("\r\n", " ") : string.Empty;
+            // Si hay error los devuelve en cadena de string y si no un string vacio asi ""
+            return errorMessages2.Length > 0 ? errorMessages2.ToString().Replace("\r\n", " ") : string.Empty;
         }
         // Funcion parala validacion de las Fechas Aqui va toda la Loguica conrespecto a Fechas
         private ResponseDto<EventDto> ValidarFechas(DateTime startDate, DateTime endDate)
         {
-            if ((startDate > endDate) || (startDate < DateTime.Today))
+            if (startDate.Date <= DateTime.Today)
             {
                 return new ResponseDto<EventDto>
                 {
                     StatusCode = 400,
                     Status = false,
-                    Message = "La fecha de Inicio no puede ser Despues de la Fecha de Finalizacion"
+                    Message = "La fecha de inicio no puede ser el dia de hoy, ni dias anteriores. Por favor, seleccione una fecha a partir de mañana."
                 };
             }
-            else if (startDate.Date == DateTime.Today)
+            if (startDate > endDate)
             {
                 return new ResponseDto<EventDto>
                 {
                     StatusCode = 400,
                     Status = false,
-                    Message = "La fecha de inicio no puede ser el dia de hoy. Por favor, seleccione una fecha a partir de mañana."
+                    Message = "La fecha de Inicio no puede ser despúes de la Fecha de Finalización. Por favor, seleccione una fecha a partir de mañana."
                 };
             }
 
-            return null; 
+
+            return null;
         }
 
 
@@ -515,7 +512,7 @@ namespace FernandaRentals.Services
 
             return (newListDetails, eventCost);
         }
-        
+
 
         private ResponseDto<EventDto> ExeptionProductosNoExistentes(List<Guid> ProductsNoExistentes)
         {
@@ -536,6 +533,7 @@ namespace FernandaRentals.Services
                 Message = $"El o los productos: {errorMessagesString}no exiten en la base de datos."
             };
         }
+
 
     }
 }

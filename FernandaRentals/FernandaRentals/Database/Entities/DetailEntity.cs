@@ -1,11 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using InmobiliariaUNAH.Database.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FernandaRentals.Database.Entities
 {
-    [Table("detail", Schema = "dbo")]
-    public class DetailEntity : BaseEntity
+    [Table("events_details", Schema = "dbo")]
+    public class DetailEntity : AuditEntity
     {
+        [Key]
+        [Display(Name = "Id")]
+        [Required(ErrorMessage = "El {0} es Requerido")]
+        [Column("id")]
+        public Guid Id { get; set; }
 
         [Display(Name = "Id del Evento")]
         [Required(ErrorMessage = "El {0} es obligatorio.")]

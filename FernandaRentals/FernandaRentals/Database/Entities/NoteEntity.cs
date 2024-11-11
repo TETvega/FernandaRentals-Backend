@@ -3,12 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FernandaRentals.Database.Entities
 {
-    [Table("notes", Schema = "dbo")]
+    [Table("events_notes", Schema = "dbo")]
     public class NoteEntity : BaseEntity
     {
-        [Display(Name = "Titulo de Nota")]
-        [Column("title")]
-        public string Title { get; set; }
 
         [Display(Name = "Evento Id")]
         [Required(ErrorMessage = "El {0} es obligatorio.")]
