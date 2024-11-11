@@ -32,9 +32,13 @@ namespace FernandaRentals.Database.Entities
         [Column("unit_price")]
         public decimal UnitPrice { get; set; }
 
-        //[Display(Name = "Precio Total")]
-        //[Column("total_price")]
-        ////funcion fecha del total a pagar en un producto
-        //public decimal TotalPrice {  get; set; } // no pude expresarlo como funcion flecha en la base no aparecia
+        [Display(Name = "Precio Total")]
+        [Column("total_price")]
+        //funcion fecha del total a pagar en un producto
+        public decimal TotalPrice { get; set; } // no pude expresarlo como funcion flecha en la base no aparecia
+
+        // las comunes del campo de auditoria
+        public virtual UserEntity CreatedByUser { get; set; }
+        public virtual UserEntity UpdatedByUser { get; set; }
     }
 }

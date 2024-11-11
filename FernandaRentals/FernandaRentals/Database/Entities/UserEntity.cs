@@ -16,8 +16,6 @@ namespace FernandaRentals.Database.Entities
         //[Column("last_name")]
         //[Required]
         //public string LastName { get; set; }
-
-
         [Column("refresh_token")]
         [StringLength(450)]
 

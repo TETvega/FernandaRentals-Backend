@@ -11,14 +11,14 @@ namespace FernandaRentals.Database.Entities
         [Column("product_id")]
         public Guid ProductId { get; set; }
         [ForeignKey(nameof(ProductId))]
-        public virtual ProductEntity Product { get; set; } 
+        public virtual ProductEntity Product { get; set; }
 
         [Display(Name = "Evento Id")]
         [Required(ErrorMessage = "El {0} es obligatorio.")]
         [Column("event_id")]
         public Guid EventId { get; set; }
         [ForeignKey(nameof(EventId))]
-        public virtual EventEntity Event { get; set; } 
+        public virtual EventEntity Event { get; set; }
 
         [Display(Name = "Fecha")]
         [Required(ErrorMessage = "La {0} es obligatoria.")]
@@ -28,7 +28,10 @@ namespace FernandaRentals.Database.Entities
         [Display(Name = "Cantidad")]
         [Required(ErrorMessage = "La {0} es obligatoria.")]
         [Column("count")]
-        public int Count { get; set; } // esta propiedad deberia ser INT ?
-        // en efecto tiene que se int 
+        public decimal Count { get; set; } // esta propiedad deberia ser INT ?
+
+        // las comunes del campo de auditoria
+        public virtual UserEntity CreatedByUser { get; set; }
+        public virtual UserEntity UpdatedByUser { get; set; }
     }
 }

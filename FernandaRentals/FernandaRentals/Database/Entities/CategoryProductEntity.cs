@@ -14,5 +14,9 @@ namespace FernandaRentals.Database.Entities
         public string Description { get; set; }
 
         public virtual IEnumerable<ProductDtoForCategoryProduct> ProductsOfCategory { get; set; }
+
+        // las comunes del campo de auditoria
+        public virtual UserEntity CreatedByUser { get; set; }
+        public virtual UserEntity UpdatedByUser { get; set; }
     }
 }

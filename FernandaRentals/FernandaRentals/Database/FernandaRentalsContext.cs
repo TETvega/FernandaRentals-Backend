@@ -1,4 +1,5 @@
-﻿using FernandaRentals.Database.Configuration;
+﻿
+using FernandaRentals.Database.Configuration;
 using FernandaRentals.Database.Entities;
 using FernandaRentals.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -42,16 +43,52 @@ namespace FernandaRentals.Database
 
             //Aplicacion de las Configuraciones de Entidades
             modelBuilder.ApplyConfiguration(new ClientConfiguration());
-            modelBuilder.ApplyConfiguration(new ClientTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new CategoryProductConfiguration());
+            modelBuilder.ApplyConfiguration(new ClienTypeConfiguration());
             modelBuilder.ApplyConfiguration(new DetailConfiguration());
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new EventConfiguration());
+            modelBuilder.ApplyConfiguration(new NoteConfiguraction());
+            modelBuilder.ApplyConfiguration(new ReservationConfiguration());
 
 
 
+            // las configuraciones en decimales ahora se realizan en el archivo de Configuracion
+            // fallo realizarlo alli
+            modelBuilder.Entity<ClientTypeEntity>()
+                 .Property(e => e.Discount)
+                 .HasPrecision(18, 2);
 
+            modelBuilder.Entity<DetailEntity>()
+                .Property(e => e.Quantity)
+                .HasPrecision(18, 2);
 
-        // las configuraciones en decimales ahora se realizan en el archivo de Configuracion
+            modelBuilder.Entity<EventEntity>()
+                .Property(e => e.Discount)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<EventEntity>()
+                .Property(e => e.EventCost)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<EventEntity>()
+                .Property(e => e.Total)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<ProductEntity>()
+                .Property(e => e.Cost)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<DetailEntity>()
+            .Property(d => d.UnitPrice)
+            .HasColumnType("decimal(18,2)");
+            // Ignorar la propiedad calculada TotalPrice
+            modelBuilder.Entity<DetailEntity>()
+            .Property(d => d.TotalPrice)
+            .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<ReservationEntity>()
+                .Property(r => r.Count)
+                .HasColumnType("decimal(18,2)"); // Ajusta la precisión y escala según tus necesidades
 
         }
 

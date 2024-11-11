@@ -91,12 +91,13 @@ namespace FernandaRentals.Migrations
                 {
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     description = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    CreatedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    UpdatedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     created_by = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     created_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     updated_by = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
-                    updated_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    UpdatedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    updated_date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -121,12 +122,13 @@ namespace FernandaRentals.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     discount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     created_by = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    created_date = table.Column<DateTime>(type: "datetime", nullable: false),
+                    created_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     updated_by = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    updated_date = table.Column<DateTime>(type: "datetime", nullable: false)
+                    updated_date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -247,22 +249,23 @@ namespace FernandaRentals.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(501)", maxLength: 501, nullable: false),
-                    UrlImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Stock = table.Column<int>(type: "int", nullable: false),
-                    Cost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    description = table.Column<string>(type: "nvarchar(501)", maxLength: 501, nullable: false),
+                    url_image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    category_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    stock = table.Column<int>(type: "int", nullable: false),
+                    cost = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     created_by = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    created_date = table.Column<DateTime>(type: "datetime", nullable: false),
+                    created_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     updated_by = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    updated_date = table.Column<DateTime>(type: "datetime", nullable: false)
+                    updated_date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_product", x => x.id);
                     table.ForeignKey(
-                        name: "FK_product_category_product_CategoryId",
-                        column: x => x.CategoryId,
+                        name: "FK_product_category_product_category_id",
+                        column: x => x.category_id,
                         principalSchema: "dbo",
                         principalTable: "category_product",
                         principalColumn: "id",
@@ -273,14 +276,14 @@ namespace FernandaRentals.Migrations
                         principalSchema: "security",
                         principalTable: "users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_product_users_updated_by",
                         column: x => x.updated_by,
                         principalSchema: "security",
                         principalTable: "users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -289,29 +292,23 @@ namespace FernandaRentals.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ClientTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    user_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    client_type_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     created_by = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    created_date = table.Column<DateTime>(type: "datetime", nullable: false),
+                    created_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     updated_by = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    updated_date = table.Column<DateTime>(type: "datetime", nullable: false)
+                    updated_date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_clients", x => x.id);
                     table.ForeignKey(
-                        name: "FK_clients_client_type_ClientTypeId",
-                        column: x => x.ClientTypeId,
+                        name: "FK_clients_client_type_client_type_id",
+                        column: x => x.client_type_id,
                         principalSchema: "dbo",
                         principalTable: "client_type",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_clients_users_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "security",
-                        principalTable: "users",
-                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_clients_users_created_by",
@@ -319,14 +316,21 @@ namespace FernandaRentals.Migrations
                         principalSchema: "security",
                         principalTable: "users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_clients_users_updated_by",
                         column: x => x.updated_by,
                         principalSchema: "security",
                         principalTable: "users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_clients_users_user_id",
+                        column: x => x.user_id,
+                        principalSchema: "security",
+                        principalTable: "users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -335,24 +339,25 @@ namespace FernandaRentals.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EventCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Discount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    user_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    start_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    end_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    location = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    subtotal = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    discount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    total = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     created_by = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    created_date = table.Column<DateTime>(type: "datetime", nullable: false),
+                    created_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     updated_by = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    updated_date = table.Column<DateTime>(type: "datetime", nullable: false)
+                    updated_date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_event", x => x.id);
                     table.ForeignKey(
-                        name: "FK_event_clients_ClientId",
-                        column: x => x.ClientId,
+                        name: "FK_event_clients_user_id",
+                        column: x => x.user_id,
                         principalSchema: "dbo",
                         principalTable: "clients",
                         principalColumn: "id",
@@ -363,14 +368,14 @@ namespace FernandaRentals.Migrations
                         principalSchema: "security",
                         principalTable: "users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_event_users_updated_by",
                         column: x => x.updated_by,
                         principalSchema: "security",
                         principalTable: "users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -381,12 +386,14 @@ namespace FernandaRentals.Migrations
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     event_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     product_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    quantity = table.Column<int>(type: "int", nullable: false),
+                    quantity = table.Column<int>(type: "int", precision: 18, scale: 2, nullable: false),
                     unit_price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    total_price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     created_by = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    created_date = table.Column<DateTime>(type: "datetime", nullable: false),
+                    created_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     updated_by = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    updated_date = table.Column<DateTime>(type: "datetime", nullable: false)
+                    updated_date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -411,14 +418,14 @@ namespace FernandaRentals.Migrations
                         principalSchema: "security",
                         principalTable: "users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_detail_users_updated_by",
                         column: x => x.updated_by,
                         principalSchema: "security",
                         principalTable: "users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -429,7 +436,14 @@ namespace FernandaRentals.Migrations
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     event_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
+                    description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    CreatedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    UpdatedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    created_by = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    created_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    updated_by = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    updated_date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -441,6 +455,18 @@ namespace FernandaRentals.Migrations
                         principalTable: "event",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_notes_users_CreatedByUserId",
+                        column: x => x.CreatedByUserId,
+                        principalSchema: "security",
+                        principalTable: "users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_notes_users_UpdatedByUserId",
+                        column: x => x.UpdatedByUserId,
+                        principalSchema: "security",
+                        principalTable: "users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -452,13 +478,14 @@ namespace FernandaRentals.Migrations
                     product_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     event_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    count = table.Column<int>(type: "int", nullable: false),
+                    count = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreatedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    UpdatedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     created_by = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     created_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     updated_by = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
-                    updated_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    UpdatedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    updated_date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -516,10 +543,10 @@ namespace FernandaRentals.Migrations
                 column: "updated_by");
 
             migrationBuilder.CreateIndex(
-                name: "IX_clients_ClientTypeId",
+                name: "IX_clients_client_type_id",
                 schema: "dbo",
                 table: "clients",
-                column: "ClientTypeId");
+                column: "client_type_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_clients_created_by",
@@ -534,10 +561,10 @@ namespace FernandaRentals.Migrations
                 column: "updated_by");
 
             migrationBuilder.CreateIndex(
-                name: "IX_clients_UserId",
+                name: "IX_clients_user_id",
                 schema: "dbo",
                 table: "clients",
-                column: "UserId");
+                column: "user_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_detail_created_by",
@@ -564,12 +591,6 @@ namespace FernandaRentals.Migrations
                 column: "updated_by");
 
             migrationBuilder.CreateIndex(
-                name: "IX_event_ClientId",
-                schema: "dbo",
-                table: "event",
-                column: "ClientId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_event_created_by",
                 schema: "dbo",
                 table: "event",
@@ -582,16 +603,34 @@ namespace FernandaRentals.Migrations
                 column: "updated_by");
 
             migrationBuilder.CreateIndex(
+                name: "IX_event_user_id",
+                schema: "dbo",
+                table: "event",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_notes_CreatedByUserId",
+                schema: "dbo",
+                table: "notes",
+                column: "CreatedByUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_notes_event_id",
                 schema: "dbo",
                 table: "notes",
                 column: "event_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_product_CategoryId",
+                name: "IX_notes_UpdatedByUserId",
+                schema: "dbo",
+                table: "notes",
+                column: "UpdatedByUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_product_category_id",
                 schema: "dbo",
                 table: "product",
-                column: "CategoryId");
+                column: "category_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_product_created_by",

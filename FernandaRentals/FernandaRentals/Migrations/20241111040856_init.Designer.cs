@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FernandaRentals.Migrations
 {
     [DbContext(typeof(FernandaRentalsContext))]
-    [Migration("20241111011609_init")]
+    [Migration("20241111040856_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -51,6 +51,11 @@ namespace FernandaRentals.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("description");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
+
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")
@@ -80,7 +85,8 @@ namespace FernandaRentals.Migrations
                         .HasColumnName("id");
 
                     b.Property<Guid>("ClientTypeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("client_type_id");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -89,8 +95,13 @@ namespace FernandaRentals.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("created_date");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
 
                     b.Property<string>("UpdatedBy")
                         .IsRequired()
@@ -99,12 +110,13 @@ namespace FernandaRentals.Migrations
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("updated_date");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("user_id");
 
                     b.HasKey("Id");
 
@@ -133,19 +145,23 @@ namespace FernandaRentals.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("created_date");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("description");
 
                     b.Property<decimal>("Discount")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)")
                         .HasColumnName("discount");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
 
                     b.Property<string>("UpdatedBy")
                         .IsRequired()
@@ -154,7 +170,7 @@ namespace FernandaRentals.Migrations
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id");
@@ -180,20 +196,30 @@ namespace FernandaRentals.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("created_date");
 
                     b.Property<Guid>("EventId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("event_id");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
+
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("product_id");
 
                     b.Property<int>("Quantity")
+                        .HasPrecision(18, 2)
                         .HasColumnType("int")
                         .HasColumnName("quantity");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("total_price");
 
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,2)")
@@ -206,7 +232,7 @@ namespace FernandaRentals.Migrations
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id");
@@ -230,7 +256,8 @@ namespace FernandaRentals.Migrations
                         .HasColumnName("id");
 
                     b.Property<Guid>("ClientId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("user_id");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -239,27 +266,41 @@ namespace FernandaRentals.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("created_date");
 
                     b.Property<decimal>("Discount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("discount");
 
                     b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("end_date");
 
                     b.Property<decimal>("EventCost")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("subtotal");
 
                     b.Property<string>("Location")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("location");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("start_date");
 
                     b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("total");
 
                     b.Property<string>("UpdatedBy")
                         .IsRequired()
@@ -268,7 +309,7 @@ namespace FernandaRentals.Migrations
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id");
@@ -289,6 +330,18 @@ namespace FernandaRentals.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("id");
 
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("created_by");
+
+                    b.Property<string>("CreatedByUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_date");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -299,13 +352,34 @@ namespace FernandaRentals.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("event_id");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
+
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("title");
 
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("updated_by");
+
+                    b.Property<string>("UpdatedByUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_date");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatedByUserId");
+
                     b.HasIndex("EventId");
+
+                    b.HasIndex("UpdatedByUserId");
 
                     b.ToTable("notes", "dbo");
                 });
@@ -318,10 +392,13 @@ namespace FernandaRentals.Migrations
                         .HasColumnName("id");
 
                     b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("category_id");
 
                     b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("cost");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -330,16 +407,23 @@ namespace FernandaRentals.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("created_date");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(501)
-                        .HasColumnType("nvarchar(501)");
+                        .HasColumnType("nvarchar(501)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
 
                     b.Property<int>("Stock")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("stock");
 
                     b.Property<string>("UpdatedBy")
                         .IsRequired()
@@ -348,12 +432,13 @@ namespace FernandaRentals.Migrations
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("updated_date");
 
                     b.Property<string>("UrlImage")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("url_image");
 
                     b.HasKey("Id");
 
@@ -373,8 +458,8 @@ namespace FernandaRentals.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("id");
 
-                    b.Property<int>("Count")
-                        .HasColumnType("int")
+                    b.Property<decimal>("Count")
+                        .HasColumnType("decimal(18,2)")
                         .HasColumnName("count");
 
                     b.Property<string>("CreatedBy")
@@ -396,6 +481,11 @@ namespace FernandaRentals.Migrations
                     b.Property<Guid>("EventId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("event_id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier")
@@ -662,13 +752,13 @@ namespace FernandaRentals.Migrations
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "User")
@@ -710,7 +800,7 @@ namespace FernandaRentals.Migrations
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FernandaRentals.Database.Entities.EventEntity", "Event")
@@ -728,7 +818,7 @@ namespace FernandaRentals.Migrations
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CreatedByUser");
@@ -751,13 +841,13 @@ namespace FernandaRentals.Migrations
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Client");
@@ -769,13 +859,25 @@ namespace FernandaRentals.Migrations
 
             modelBuilder.Entity("FernandaRentals.Database.Entities.NoteEntity", b =>
                 {
+                    b.HasOne("FernandaRentals.Database.Entities.UserEntity", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedByUserId");
+
                     b.HasOne("FernandaRentals.Database.Entities.EventEntity", "Event")
                         .WithMany()
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("FernandaRentals.Database.Entities.UserEntity", "UpdatedByUser")
+                        .WithMany()
+                        .HasForeignKey("UpdatedByUserId");
+
+                    b.Navigation("CreatedByUser");
+
                     b.Navigation("Event");
+
+                    b.Navigation("UpdatedByUser");
                 });
 
             modelBuilder.Entity("FernandaRentals.Database.Entities.ProductEntity", b =>
@@ -789,13 +891,13 @@ namespace FernandaRentals.Migrations
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");

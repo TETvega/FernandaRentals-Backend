@@ -9,6 +9,11 @@ namespace FernandaRentals.Database.Entities
         [Column("id")]
         public Guid Id { get; set; }
 
+        [Display(Name = "Nombre")]
+        [Required(ErrorMessage = "El {0} de la categoria es requerido.")]
+        [Column("name")]
+        public string Name { get; set; }
+
         [StringLength(450)]
         [Column("created_by")]
         public string CreatedBy { get; set; }
@@ -23,9 +28,7 @@ namespace FernandaRentals.Database.Entities
         [Column("updated_date")]
         public DateTime UpdatedDate { get; set; }
 
-        // las comunes del campo de auditoria
-        public virtual UserEntity CreatedByUser { get; set; }
-        public virtual UserEntity UpdatedByUser { get; set; }
+
 
     }
 }

@@ -8,11 +8,16 @@ namespace FernandaRentals.Database.Entities
     {
         [Display(Name = "Descripción")]
         [Required(ErrorMessage = "La {0} es obligatoria.")]
+        [Column("description")]
         public string Description { get; set; }
 
         [Display(Name = "Descuento")]
         [Required(ErrorMessage = "La cantidad del {0} para este tipo de cliente es requerido.")]
+        [Column("discount")]
         public decimal Discount { get; set; }
+        // las comunes del campo de auditoria
+        public virtual UserEntity CreatedByUser { get; set; }
+        public virtual UserEntity UpdatedByUser { get; set; }
 
     }
 }

@@ -38,6 +38,13 @@ namespace FernandaRentals
             // Utilizado para la validacion con identity en Audit 
             services.AddHttpContextAccessor();
 
+
+            services.AddControllers().AddNewtonsoftJson(options => // Añadir Controladores con Newtonsoft.Json (del pack: Microsoft.AspNetCore.Mvc.NewtonsoftJson)
+            {
+                options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; // Esto le indica a Newtonsoft.Json que ignore las referencias cíclicas durante la serialización.
+            });
+
             // agregando parte de la Configuracion de Conexion a la Base de datos
             var name = Configuration.GetConnectionString("DefaultConnection");
 
@@ -47,6 +54,13 @@ namespace FernandaRentals
 
             // Agregando los Custom Services
             //services.AddTransient< INTERFAZ, SERVICIO>();
+            // Add custom services
+            services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<ICategoryProductService, CategoryProductService>();
+            services.AddTransient<INoteService, NotesService>();
+            services.AddTransient<IClientTypeService, ClientTypeService>();
+            services.AddTransient<IEventService, EventsService>();
+            services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IAuditService, AuditService>();
 
 

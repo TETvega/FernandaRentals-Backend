@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FernandaRentals.Database.Configuration
 {
-    public class ProductConfiguration : IEntityTypeConfiguration<ProductEntity>
+    public class NoteConfiguraction : IEntityTypeConfiguration<NoteEntity>
     {
-        public void Configure(EntityTypeBuilder<ProductEntity> builder)
+        public void Configure(EntityTypeBuilder<NoteEntity> builder)
         {
             builder.HasOne(e => e.CreatedByUser)
                 .WithMany()
