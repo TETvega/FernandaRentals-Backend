@@ -23,5 +23,9 @@ namespace FernandaRentals.Database.Entities
         [Column("updated_date")]
         public DateTime UpdatedDate { get; set; }
 
+        // las comunes del campo de auditoria
+        public virtual UserEntity CreatedByUser { get; set; }
+        public virtual UserEntity UpdatedByUser { get; set; }
+
     }
 }

@@ -2,6 +2,7 @@
 using FernandaRentals.Database.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace FernandaRentals.Database
 {
@@ -125,7 +126,135 @@ namespace FernandaRentals.Database
 
 
         // SEED DE DATOS DE OTROS 
+        public static async Task LoadClientsAsync(ILoggerFactory loggerFactory, FernandaRentalsContext context)
+        {
+            try
+            {
+                var jsonFilePath = "SeedData/clients.json";
+                var jsonContent = await File.ReadAllTextAsync(jsonFilePath);
+                var clients = JsonConvert.DeserializeObject<List<ClientEntity>>(jsonContent);
 
+                if (!await context.Clients.AnyAsync())
+                {
+                    context.AddRange(clients);
+                    await context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                var logger = loggerFactory.CreateLogger<FernandaRentalsContext>();
+                logger.LogError(e, "Error al ejecutar el Seed de Clientes.");
+            }
+        }
+
+
+
+        //seed de los eventos 
+        public static async Task LoadEventsAsync(ILoggerFactory loggerFactory, FernandaRentalsContext context)
+        {
+            try
+            {
+                var jsonFilePath = "SeedData/events.json";
+                var jsonContent = await File.ReadAllTextAsync(jsonFilePath);
+                var events = JsonConvert.DeserializeObject<List<EventEntity>>(jsonContent);
+
+                if (!await context.Events.AnyAsync())
+                {
+                    context.AddRange(events);
+                    await context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                var logger = loggerFactory.CreateLogger<FernandaRentalsContext>();
+                logger.LogError(e, "Error al ejecutar el Seed de Eventos.");
+            }
+        }
+        // seed de las Notas
+        public static async Task LoadNotesAsync(ILoggerFactory loggerFactory, FernandaRentalsContext context)
+        {
+            try
+            {
+                var jsonFilePath = "SeedData/notes.json";
+                var jsonContent = await File.ReadAllTextAsync(jsonFilePath);
+                var notes = JsonConvert.DeserializeObject<List<NoteEntity>>(jsonContent);
+
+                if (!await context.Notes.AnyAsync())
+                {
+                    context.AddRange(notes);
+                    await context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                var logger = loggerFactory.CreateLogger<FernandaRentalsContext>();
+                logger.LogError(e, "Error al ejecutar el Seed de Notes.");
+            }
+        }
+        public static async Task LoadClientsTypesAsync(ILoggerFactory loggerFactory, FernandaRentalsContext context)
+        {
+            try
+            {
+                var jsonFilePath = "SeedData/clientstypes.json";
+                var jsonContent = await File.ReadAllTextAsync(jsonFilePath);
+                var clientsTypes = JsonConvert.DeserializeObject<List<ClientTypeEntity>>(jsonContent);
+
+                if (!await context.TypesOfClient.AnyAsync())
+                {
+                    context.AddRange(clientsTypes);
+                    await context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                var logger = loggerFactory.CreateLogger<FernandaRentalsContext>();
+                logger.LogError(e, "Error al ejecutar el Seed de clientsTypes.");
+            }
+        }
+
+        public static async Task LoadCategoriesProductAsync(ILoggerFactory loggerFactory, FernandaRentalsContext context)
+        {
+            try
+            {
+                var jsonFilePath = "SeedData/categoriesproduct.json";
+                var jsonContent = await File.ReadAllTextAsync(jsonFilePath);
+                var categoriesproduct = JsonConvert.DeserializeObject<List<CategoryProductEntity>>(jsonContent);
+
+                if (!await context.CategoryProducts.AnyAsync())
+                {
+                    context.AddRange(categoriesproduct);
+                    await context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                var logger = loggerFactory.CreateLogger<FernandaRentalsContext>();
+                logger.LogError(e, "Error al ejecutar el Seed de categoriesProduct.");
+            }
+        }
+
+        public static async Task LoadProductsAsync(ILoggerFactory loggerFactory, FernandaRentalsContext context)
+        {
+            try
+            {
+                var jsonFilePath = "SeedData/products.json";
+                var jsonContent = await File.ReadAllTextAsync(jsonFilePath); // Lee el contenido completo del archivo JSON y lo almacena en 'jsonContent'.
+                var products = JsonConvert.DeserializeObject<List<ProductEntity>>(jsonContent);
+
+                if (!await context.Products.AnyAsync())
+                {
+
+
+                    context.AddRange(products);
+                    await context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                var logger = loggerFactory.CreateLogger<FernandaRentalsContext>();
+                logger.LogError(e, "Error al ejecutar el Seed de productos.");
+            }
+        }
 
     }
 }

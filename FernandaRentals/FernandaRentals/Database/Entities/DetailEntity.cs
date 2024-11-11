@@ -4,13 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace FernandaRentals.Database.Entities
 {
     [Table("detail", Schema = "dbo")]
-    public class DetailEntity
+    public class DetailEntity : BaseEntity
     {
-        [Key]
-        [Display(Name = "Id")]
-        [Required(ErrorMessage = "El {0} es Requerido")]
-        [Column("id")]
-        public Guid Id { get; set; }
 
         [Display(Name = "Id del Evento")]
         [Required(ErrorMessage = "El {0} es obligatorio.")]
@@ -37,9 +32,9 @@ namespace FernandaRentals.Database.Entities
         [Column("unit_price")]
         public decimal UnitPrice { get; set; }
 
-        [Display(Name = "Precio Total")]
-        [Column("total_price")]
-        //funcion fecha del total a pagar en un producto
-        public decimal TotalPrice {  get; set; } // no pude expresarlo como funcion flecha en la base no aparecia
+        //[Display(Name = "Precio Total")]
+        //[Column("total_price")]
+        ////funcion fecha del total a pagar en un producto
+        //public decimal TotalPrice {  get; set; } // no pude expresarlo como funcion flecha en la base no aparecia
     }
 }

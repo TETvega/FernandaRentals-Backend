@@ -28,6 +28,7 @@ namespace FernandaRentals.Database.Entities
         [Display(Name = "Cantidad")]
         [Required(ErrorMessage = "La {0} es obligatoria.")]
         [Column("count")]
-        public decimal Count { get; set; } // esta propiedad deberia ser INT ?
+        public int Count { get; set; } // esta propiedad deberia ser INT ?
+        // en efecto tiene que se int 
     }
 }

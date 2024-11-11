@@ -1,4 +1,5 @@
-﻿using FernandaRentals.Database.Entities;
+﻿using FernandaRentals.Database.Configuration;
+using FernandaRentals.Database.Entities;
 using FernandaRentals.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -24,38 +25,37 @@ namespace FernandaRentals.Database
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AS");
-           // modelBuilder.Entity<TagEntity>()
-            //.Property(e => e.Name)
-            //.UseCollation("SQL_Latin1_General_CP1_CI_AS");
 
+
+            // Creando Security Schema
             modelBuilder.HasDefaultSchema("security");
 
             modelBuilder.Entity<UserEntity>().ToTable("users");
             modelBuilder.Entity<IdentityRole>().ToTable("roles");
             modelBuilder.Entity<IdentityUserRole<string>>().ToTable("users_roles");
+
+            //Estos son los permisos
             modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("users_claims");
-            modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("users_logins");
             modelBuilder.Entity<IdentityRoleClaim<string>>().ToTable("roles_claims");
+            modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("users_logins");
             modelBuilder.Entity<IdentityUserToken<string>>().ToTable("users_tokens");
 
-            //modelBuilder.ApplyConfiguration(new CategoryConfiguration());
-            //modelBuilder.ApplyConfiguration(new PostConfiguration());
-            //modelBuilder.ApplyConfiguration(new PostTagConfiguration());
-            //modelBuilder.ApplyConfiguration(new TagConfiguration());
+            //Aplicacion de las Configuraciones de Entidades
+            modelBuilder.ApplyConfiguration(new ClientConfiguration());
+            modelBuilder.ApplyConfiguration(new ClientTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new DetailConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductConfiguration());
+            modelBuilder.ApplyConfiguration(new EventConfiguration());
 
-            // Set FKs OnRestrict
-            var eTypes = modelBuilder.Model.GetEntityTypes();
-            foreach (var type in eTypes)
-            {
-                var foreignKeys = type.GetForeignKeys();
-                foreach (var foreignKey in foreignKeys)
-                {
-                    foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
-                }
-            }
+
+
+
+
+        // las configuraciones en decimales ahora se realizan en el archivo de Configuracion
 
         }
 
+        // Metodo para capturar el usuario que esta guardando los cambios creando o modificando 
         public override Task<int> SaveChangesAsync(
             CancellationToken cancellationToken = default)
         {
@@ -71,11 +71,13 @@ namespace FernandaRentals.Database
                 var entity = entry.Entity as BaseEntity;
                 if (entity != null)
                 {
+                    // si esta agregando o creando 
                     if (entry.State == EntityState.Added)
                     {
                         entity.CreatedBy = _auditService.GetUserId();
                         entity.CreatedDate = DateTime.Now;
                     }
+                   // si esta modificando 
                     else
                     {
                         entity.UpdatedBy = _auditService.GetUserId();
@@ -86,6 +88,17 @@ namespace FernandaRentals.Database
 
             return base.SaveChangesAsync(cancellationToken);
         }
+
+        // Agregando el contexto 
+
+        public DbSet<CategoryProductEntity> CategoryProducts { get; set; }
+        public DbSet<ClientTypeEntity> TypesOfClient { get; set; }
+        public DbSet<DetailEntity> Details { get; set; }
+        public DbSet<EventEntity> Events { get; set; }
+        public DbSet<NoteEntity> Notes { get; set; }
+        public DbSet<ProductEntity> Products { get; set; }
+        public DbSet<ReservationEntity> Reservations { get; set; }
+        public DbSet<ClientEntity> Clients { get; set; }
 
     }
 }
