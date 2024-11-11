@@ -1,10 +1,10 @@
-﻿using InmobiliariaUNAH.Dtos.Auth;
-using InmobiliariaUNAH.Dtos.common;
-using InmobiliariaUNAH.Services.Interfaces;
+﻿using FernandaRentals.Dtos.Auth;
+using FernandaRentals.Dtos.Common;
+using FernandaRentals.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace InmobiliariaUNAH.Controllers
+namespace FernandaRentals.Controllers
 {
     [Route("api/auth")]
     [ApiController]

@@ -1,5 +1,5 @@
 ﻿using FernandaRentals.Constants;
-using FernandaRentals.Dtos.common;
+using FernandaRentals.Dtos.Common;
 using FernandaRentals.Dtos.Events;
 using FernandaRentals.Dtos.Products;
 using FernandaRentals.Services;

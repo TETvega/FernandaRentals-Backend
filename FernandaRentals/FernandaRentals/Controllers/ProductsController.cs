@@ -1,4 +1,4 @@
-﻿using FernandaRentals.Dtos.common;
+﻿using FernandaRentals.Dtos.Common;
 using FernandaRentals.Dtos.Products;
 using FernandaRentals.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
