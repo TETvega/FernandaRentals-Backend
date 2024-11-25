@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace FernandaRentals.Services
@@ -48,20 +49,19 @@ namespace FernandaRentals.Services
                 var userEntity = await _userManager.FindByEmailAsync(dto.Email);
 
                 // ClaimList creation
-                var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Email, userEntity.Email),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim("UserId", userEntity.Id),
-                };
-
-                var userRoles = await _userManager.GetRolesAsync(userEntity);
-                foreach (var role in userRoles)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Role, role));
-                }
+                List<Claim> authClaims = await GetClaims(userEntity);
 
                 var jwtToken = GetToken(authClaims);
+
+                var refreshToken = GenerateRefreshTokenString();
+
+                userEntity.RefreshToken = refreshToken;
+                userEntity.RefreshTokenExpire = DateTime.Now
+                    .AddMinutes(int.Parse(_configuration["JWT:RefreshTokenExpire"] ?? "30"));
+
+                _context.Entry(userEntity);
+                await _context.SaveChangesAsync();
+
 
                 return new ResponseDto<LoginResponseDto>
                 {
@@ -73,7 +73,8 @@ namespace FernandaRentals.Services
                         Name = userEntity.Name,
                         Email = userEntity.Email,
                         Token = new JwtSecurityTokenHandler().WriteToken(jwtToken), // convertir token en string
-                        TokenExpiration = jwtToken.ValidTo
+                        TokenExpiration = jwtToken.ValidTo,
+                        RefreshToken = refreshToken
                     }
                 };
             }
@@ -170,6 +171,15 @@ namespace FernandaRentals.Services
                 };
 
                 var jwtToken = GetToken(authClaims);
+                var refreshToken = GenerateRefreshTokenString();
+
+                userEntity.RefreshToken = refreshToken;
+                userEntity.RefreshTokenExpire = DateTime.Now
+                    .AddMinutes(int.Parse(_configuration["JWT:RefreshTokenExpire"] ?? "30"));
+
+                _context.Entry(userEntity);
+                await _context.SaveChangesAsync();
+
 
                 return new ResponseDto<LoginResponseDto>
                 {
@@ -181,6 +191,7 @@ namespace FernandaRentals.Services
                         Email = userEntity.Email,
                         Token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
                         TokenExpiration = jwtToken.ValidTo,
+                        RefreshToken = refreshToken
                     }
                 };
             }
@@ -217,6 +228,36 @@ namespace FernandaRentals.Services
 
             Console.WriteLine("Estoy cansado jefe");
             return token;
+        }
+
+        private async Task<List<Claim>> GetClaims(UserEntity userEntity)
+        {
+            var authClaims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Email, userEntity.Email),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim("UserId", userEntity.Id),
+                };
+
+            var userRoles = await _userManager.GetRolesAsync(userEntity);
+            foreach (var role in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            return authClaims;
+        }
+
+        private string GenerateRefreshTokenString()
+        {
+            var randomNumber = new byte[64];
+
+            using (var numberGenerator = RandomNumberGenerator.Create())
+            {
+                numberGenerator.GetBytes(randomNumber);
+            }
+
+            return Convert.ToBase64String(randomNumber);
         }
     }
 }

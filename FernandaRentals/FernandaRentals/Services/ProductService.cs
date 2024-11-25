@@ -68,7 +68,8 @@ namespace FernandaRentals.Services
             }
             if (!string.IsNullOrEmpty(searchTerm) && !string.IsNullOrEmpty(category))
             {
-                productEntityQuery = productEntityQuery.Where(x => x.Category.Name == category &&
+                productEntityQuery = productEntityQuery.Where(x => x.Category.Name == category 
+                           &&
                           (x.Name + " " + x.Description).ToLower().Contains(searchTerm.ToLower()));
 
             }

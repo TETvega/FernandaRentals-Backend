@@ -47,6 +47,7 @@ namespace FernandaRentals
             services.AddTransient<IEventService, EventsService>();
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IAuditService, AuditService>();
+            services.AddTransient<IAdminService, AdminService>();
 
 
             // Add Identity
