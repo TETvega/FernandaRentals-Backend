@@ -1,4 +1,5 @@
-﻿using FernandaRentals.Dtos.Auth;
+﻿using FernandaRentals.Dtos.Admin;
+using FernandaRentals.Dtos.Auth;
 using FernandaRentals.Dtos.Common;
 using FernandaRentals.Dtos.DashBoard;
 using FernandaRentals.Services.Interfaces;
@@ -22,6 +23,13 @@ namespace FernandaRentals.Controllers
         public async Task<ActionResult<ResponseDto<DashBoardDto>>> DashBoardData()
         {
             var response = await _adminService.GetDashBoardData();
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpGet("clients-data")]
+        public async Task<ActionResult<ResponseDto<List<ClientsDataDto>>>> ClientsData()
+        {
+            var response = await _adminService.GetClientsData();
             return StatusCode(response.StatusCode, response);
         }
     }
