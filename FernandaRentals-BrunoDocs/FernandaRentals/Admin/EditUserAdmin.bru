@@ -1,0 +1,19 @@
+meta {
+  name: EditUserAdmin
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{PATH}}/admin/edit-admin/5c868973-a25c-4d4f-96a7-42ebbe0abee6
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Anne3",
+    "email": "annerh3@gmail.com",
+    "password": "T*"
+  }
+}
