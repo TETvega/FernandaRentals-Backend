@@ -7,6 +7,7 @@ using FernandaRentals.Dtos.Events.Helper_Dto;
 using FernandaRentals.Dtos.Events;
 using FernandaRentals.Dtos.Notes;
 using FernandaRentals.Dtos.Products;
+using FernandaRentals.Dtos.Client;
 
 namespace FernandaRentals.Helpers
 {
@@ -31,7 +32,13 @@ namespace FernandaRentals.Helpers
                 .ForMember(dest => dest.EventDetails, opt => opt.Ignore());
 
             CreateMap<EventEntity, EventDto>()
-                .ForMember(dest => dest.EventDetails, opt => opt.MapFrom(src => src.EventDetails));
+       .ForMember(dest => dest.EventDetails, opt => opt.MapFrom(src => src.EventDetails))
+       .ForMember(dest => dest.Client, opt => opt.MapFrom(src => src.Client));
+
+            CreateMap<ClientEntity, ClientDto>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.User.Name))
+                .ForMember(dest => dest.ClientType, opt => opt.MapFrom(src => src.ClientType.Description))
+                .ForMember(dest => dest.ClientTypeDiscount, opt => opt.MapFrom(src => src.ClientType.Discount));
 
 
             // para poder ver los detalles no se si los podia poner aqui pero los meti

@@ -45,10 +45,14 @@ namespace FernandaRentals.Services
         public async Task<ResponseDto<List<EventDto>>> GetAllEventsAsync()
         {
             var eventsEntity = await _context.Events
-            .Include(e => e.EventDetails)
-            .ThenInclude(ed => ed.Product)
-            .ToListAsync();
-
+                .Include(e => e.Client)
+                    .ThenInclude(c => c.User)
+                .Include(e => e.Client)
+                    .ThenInclude(c => c.ClientType)
+                .Include(e => e.EventDetails)
+                    .ThenInclude(ed => ed.Product)
+                .OrderBy(e => e.t)
+                .ToListAsync();
 
             var eventsDto = _mapper.Map<List<EventDto>>(eventsEntity);
 
@@ -56,10 +60,11 @@ namespace FernandaRentals.Services
             {
                 StatusCode = 200,
                 Status = true,
-                Message = "Listado de eventos obtenida correctamente",
+                Message = "Listado de eventos obtenidos correctamente",
                 Data = eventsDto
             };
         }
+
 
         // TODO: New Method: GetAllEventsByUserIdAsync
         public async Task<ResponseDto<List<EventDto>>> GetAllEventsByUserIdAsync()
