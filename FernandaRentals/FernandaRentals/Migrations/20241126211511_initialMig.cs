@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FernandaRentals.Migrations
 {
     /// <inheritdoc />
-    public partial class DeleteNameFieldInClientsTable : Migration
+    public partial class initialMig : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

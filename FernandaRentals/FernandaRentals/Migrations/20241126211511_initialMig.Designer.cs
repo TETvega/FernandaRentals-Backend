@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FernandaRentals.Migrations
 {
     [DbContext(typeof(FernandaRentalsContext))]
-    [Migration("20241111180219_DeleteNameFieldInClientsTable")]
-    partial class DeleteNameFieldInClientsTable
+    [Migration("20241126211511_initialMig")]
+    partial class initialMig
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
