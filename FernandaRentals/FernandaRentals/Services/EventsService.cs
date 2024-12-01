@@ -51,7 +51,7 @@ namespace FernandaRentals.Services
                     .ThenInclude(c => c.ClientType)
                 .Include(e => e.EventDetails)
                     .ThenInclude(ed => ed.Product)
-                .OrderBy(e => e.t)
+                .OrderBy(e => e.StartDate)
                 .ToListAsync();
 
             var eventsDto = _mapper.Map<List<EventDto>>(eventsEntity);

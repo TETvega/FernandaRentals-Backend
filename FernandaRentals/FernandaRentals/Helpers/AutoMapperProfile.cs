@@ -37,7 +37,7 @@ namespace FernandaRentals.Helpers
 
             CreateMap<ClientEntity, ClientDto>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.User.Name))
-                .ForMember(dest => dest.ClientType, opt => opt.MapFrom(src => src.ClientType.Description))
+                .ForMember(dest => dest.ClientType, opt => opt.MapFrom(src => src.ClientType.Name))
                 .ForMember(dest => dest.ClientTypeDiscount, opt => opt.MapFrom(src => src.ClientType.Discount));
 
 
