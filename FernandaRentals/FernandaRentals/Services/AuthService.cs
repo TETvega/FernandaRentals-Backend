@@ -5,6 +5,7 @@ using FernandaRentals.Dtos.Auth;
 using FernandaRentals.Dtos.Common;
 using FernandaRentals.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -48,6 +49,22 @@ namespace FernandaRentals.Services
                 // Generación del Token
                 var userEntity = await _userManager.FindByEmailAsync(dto.Email);
 
+                var clientTypeName = await _context.Clients
+                    .Where(c => c.UserId == userEntity.Id) 
+                    .Select(c => _context.TypesOfClient
+                        .Where(tc => tc.Id == c.ClientTypeId) 
+                        .Select(tc => tc.Name) 
+                        .FirstOrDefault()) 
+                    .FirstOrDefaultAsync();
+
+                if (clientTypeName != null)
+                {
+                    // Aquí puedes usar el nombre del tipo de cliente
+                    Console.WriteLine(clientTypeName);
+                }
+
+
+
                 // ClaimList creation
                 List<Claim> authClaims = await GetClaims(userEntity);
 
@@ -74,7 +91,8 @@ namespace FernandaRentals.Services
                         Email = userEntity.Email,
                         Token = new JwtSecurityTokenHandler().WriteToken(jwtToken), // convertir token en string
                         TokenExpiration = jwtToken.ValidTo,
-                        RefreshToken = refreshToken
+                        RefreshToken = refreshToken,
+                        ClientTypeName = clientTypeName
                     }
                 };
             }

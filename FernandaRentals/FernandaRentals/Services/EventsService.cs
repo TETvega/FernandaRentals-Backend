@@ -12,6 +12,7 @@ using InmobiliariaUNAH.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Microsoft.Extensions.Logging;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -42,17 +43,76 @@ namespace FernandaRentals.Services
             _userManager = userManager;
             _logger = logger;
         }
-        public async Task<ResponseDto<List<EventDto>>> GetAllEventsAsync()
+        public async Task<ResponseDto<List<EventDto>>> GetAllEventsAsync(string opt)
         {
-            var eventsEntity = await _context.Events
-                .Include(e => e.Client)
-                    .ThenInclude(c => c.User)
-                .Include(e => e.Client)
-                    .ThenInclude(c => c.ClientType)
-                .Include(e => e.EventDetails)
-                    .ThenInclude(ed => ed.Product)
-                .OrderBy(e => e.StartDate)
-                .ToListAsync();
+            List<EventEntity> eventsEntity;
+
+            switch (opt)
+            {
+                case EventOrder.PAST:
+                    // mas recientes primero
+                    eventsEntity = await _context.Events
+                        .Where(e => e.StartDate < DateTime.Now)
+                        .OrderByDescending(e => e.StartDate)
+                        .Include(e => e.Client)
+                            .ThenInclude(c => c.User)
+                        .Include(e => e.Client)
+                            .ThenInclude(c => c.ClientType)
+                        .Include(e => e.EventDetails)
+                            .ThenInclude(ed => ed.Product)
+                        .ToListAsync();
+                    break;
+
+                case EventOrder.FUTURE:
+                    // mas cercanos primero
+                    eventsEntity = await _context.Events
+                        .Where(e => e.StartDate >= DateTime.Now)
+                        .OrderBy(e => e.StartDate)
+                        .Include(e => e.Client)
+                            .ThenInclude(c => c.User)
+                        .Include(e => e.Client)
+                            .ThenInclude(c => c.ClientType)
+                        .Include(e => e.EventDetails)
+                            .ThenInclude(ed => ed.Product)
+                        .ToListAsync();
+                    break;
+
+                case EventOrder.TODAY:
+                    //  eventos activos hoy (fecha actual dentro del rango de fechas)
+                    eventsEntity = await _context.Events
+                        .Where(e => e.StartDate <= DateTime.Now && e.EndDate >= DateTime.Now)
+                        .OrderBy(e => e.StartDate) 
+                        .Include(e => e.Client)
+                            .ThenInclude(c => c.User)
+                        .Include(e => e.Client)
+                            .ThenInclude(c => c.ClientType)
+                        .Include(e => e.EventDetails)
+                            .ThenInclude(ed => ed.Product)
+                        .ToListAsync();
+                    break;
+
+                case EventOrder.ALL:
+                    //  Todos los eventos
+                    eventsEntity = await _context.Events
+                        .OrderBy(e => e.StartDate)
+                        .Include(e => e.Client)
+                            .ThenInclude(c => c.User)
+                        .Include(e => e.Client)
+                            .ThenInclude(c => c.ClientType)
+                        .Include(e => e.EventDetails)
+                            .ThenInclude(ed => ed.Product)
+                        .ToListAsync();
+                    break;
+
+                default:
+                    return new ResponseDto<List<EventDto>>
+                    {
+                        StatusCode = 400,
+                        Status = false,
+                        Message = "Opción no válida para listar eventos",
+                        Data = null
+                    };
+            }
 
             var eventsDto = _mapper.Map<List<EventDto>>(eventsEntity);
 
@@ -64,6 +124,7 @@ namespace FernandaRentals.Services
                 Data = eventsDto
             };
         }
+
 
 
         // TODO: New Method: GetAllEventsByUserIdAsync
@@ -376,8 +437,7 @@ namespace FernandaRentals.Services
                     if ((!userRoles.Contains(RolesConstants.ADMIN)) && (userIdFromAuditService != clientEntity.UserId))  // si el usuario que está haciendo la peticion no es rol ADMIN & no es el Cliente que creo el evento, return.
                         return ResponseHelper.ResponseError<EventDto>(401, "No estás autorizado para editar o cancelar este evento.");
 
-                    _context.Events.Remove(eventEntity);
-                    await _context.SaveChangesAsync();
+                    
 
                     var details = await _context.Details.Where(d => d.EventId == id).ToListAsync();
                     _context.Details.RemoveRange(details);
@@ -386,6 +446,10 @@ namespace FernandaRentals.Services
                     var reservations = await _context.Reservations.Where(d => d.EventId == id).ToListAsync();
                     _context.Reservations.RemoveRange(reservations);
                     await _context.SaveChangesAsync();
+
+                    _context.Events.Remove(eventEntity);
+                    await _context.SaveChangesAsync(); // SqlException: The DELETE statement conflicted with the REFERENCE constraint "FK_product_reservations_events_event_id". The conflict occurred in database "FernandaRentals", table "dbo.product_reservations", column 'event_id'.
+
 
                     await transaction.CommitAsync();
 

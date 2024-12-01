@@ -10,7 +10,8 @@ namespace FernandaRentals.Services.Interfaces
         Task<ResponseDto<EventDto>> CreateEvent(EventCreateDto dto);
         Task<ResponseDto<EventDto>> EditEventAsync(EventEditDto dto, Guid id);
         Task<ResponseDto<EventDto>> GetEventById(Guid id);
-        Task<ResponseDto<List<EventDto>>> GetAllEventsAsync();
+        Task<ResponseDto<List<EventDto>>> GetAllEventsAsync(string opt);
+
         Task<ResponseDto<List<EventDto>>> GetAllEventsByUserIdAsync();
     }
 }

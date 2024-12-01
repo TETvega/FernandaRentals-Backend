@@ -19,11 +19,11 @@ namespace FernandaRentals.Controllers
             _eventService = eventService;
         }
 
-        [HttpGet]
-        [Authorize]
-        public async Task<ActionResult<ResponseDto<EventDto>>> GetAll()
+        [HttpGet("get/{opt}")]
+        [Authorize(Roles = $"{RolesConstants.ADMIN}")]
+        public async Task<ActionResult<ResponseDto<EventDto>>> GetAll(string opt)
         {
-            var response = await _eventService.GetAllEventsAsync();
+            var response = await _eventService.GetAllEventsAsync(opt);
             return StatusCode(response.StatusCode, response);
         }
 
@@ -44,7 +44,7 @@ namespace FernandaRentals.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = $"{RolesConstants.ADMIN}, {RolesConstants.CLIENT}")]
+        [Authorize(Roles = $"{RolesConstants.CLIENT}")]
         [AllowAnonymous]
         public async Task<ActionResult<ResponseDto<EventDto>>> CreateEvent(EventCreateDto dto)
         {
