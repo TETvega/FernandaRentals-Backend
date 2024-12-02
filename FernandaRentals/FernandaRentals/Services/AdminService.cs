@@ -66,6 +66,14 @@ namespace FernandaRentals.Services
                                 .FirstOrDefault())
                             .Select(u => u.Name)
                             .FirstOrDefault(),
+                        ClientEmail = _context.Users
+                            .Where(u => u.Id == _context.Clients
+                                .Where(c => c.Id == ev.ClientId)
+                                .Select(c => c.UserId)
+                                .FirstOrDefault())
+                            .Select(u => u.Email)
+                            .FirstOrDefault(),
+                        Location = ev.Location
                         // Puedes agregar otras propiedades relacionadas si son necesarias
                     })
                     .OrderBy(dashboardEvent => dashboardEvent.StartDate) // Ordena por fecha más cercana
