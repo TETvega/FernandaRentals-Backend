@@ -446,6 +446,10 @@ namespace FernandaRentals.Services
                     var reservations = await _context.Reservations.Where(d => d.EventId == id).ToListAsync();
                     _context.Reservations.RemoveRange(reservations);
                     await _context.SaveChangesAsync();
+                    
+                    var notes = await _context.Notes.Where(d => d.EventId == id).ToListAsync();
+                    _context.Notes.RemoveRange(notes);
+                    await _context.SaveChangesAsync();
 
                     _context.Events.Remove(eventEntity);
                     await _context.SaveChangesAsync(); // SqlException: The DELETE statement conflicted with the REFERENCE constraint "FK_product_reservations_events_event_id". The conflict occurred in database "FernandaRentals", table "dbo.product_reservations", column 'event_id'.
