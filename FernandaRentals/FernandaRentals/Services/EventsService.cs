@@ -575,11 +575,11 @@ namespace FernandaRentals.Services
                         EventId = eventEntity.Id,
                         ProductId = product.ProductId,
                         Quantity = product.Quantity,
-                        UnitPrice = productoIteracion.Cost,
-                        TotalPrice = product.Quantity * productoIteracion.Cost,
+                        UnitPrice = productoIteracion.Price,
+                        TotalPrice = product.Quantity * productoIteracion.Price,
                     });
 
-                    eventCost += product.Quantity * productoIteracion.Cost;
+                    eventCost += product.Quantity * productoIteracion.Price;
                 }
             }
 

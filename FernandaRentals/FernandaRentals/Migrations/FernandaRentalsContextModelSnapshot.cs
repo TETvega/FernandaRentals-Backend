@@ -358,11 +358,6 @@ namespace FernandaRentals.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("category_id");
 
-                    b.Property<decimal>("Cost")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("cost");
-
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")
@@ -382,6 +377,11 @@ namespace FernandaRentals.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("name");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("price");
 
                     b.Property<int>("Stock")
                         .HasColumnType("int")

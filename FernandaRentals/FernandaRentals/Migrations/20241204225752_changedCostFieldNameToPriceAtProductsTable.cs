@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FernandaRentals.Migrations
 {
     /// <inheritdoc />
-    public partial class initialMig : Migration
+    public partial class changedCostFieldNameToPriceAtProductsTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -253,7 +253,7 @@ namespace FernandaRentals.Migrations
                     url_image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     category_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     stock = table.Column<int>(type: "int", nullable: false),
-                    cost = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     created_by = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     created_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     updated_by = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),

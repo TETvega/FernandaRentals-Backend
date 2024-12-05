@@ -5,7 +5,7 @@
     "description": "Mesa redonda de madera, perfecta para reuniones formales.",
     "categoryId": "eef30af7-b76d-41ce-8f50-93c653936b8e",
     "stock": 15,
-    "cost": 25.00,
+    "price": 25.00,
     "urlImage": "https://i.postimg.cc/x11bdM7s/Mesa-Redonda-de-Madera.jpg"
   },
   {
@@ -14,7 +14,7 @@
     "description": "Silla de madera con cojín para mayor comodidad.",
     "categoryId": "13ff90e7-de48-4bf4-a01c-8824e6b46163",
     "stock": 50,
-    "cost": 10.00,
+    "price": 10.00,
     "urlImage": "https://i.postimg.cc/8cG7g6Mm/Silla-de-Madera-con-Coj-n.jpg"
   },
   {
@@ -23,7 +23,7 @@
     "description": "Mantel blanco de algodón, ideal para banquetes.",
     "categoryId": "45d56053-37f4-4e56-a267-740e285ed38d",
     "stock": 100,
-    "cost": 12.50,
+    "price": 12.50,
     "urlImage": "https://i.postimg.cc/VLBjvYNN/Mantel-Blanco-Cl-sico.jpg"
   },
   {
@@ -32,7 +32,7 @@
     "description": "Elegante centro de mesa con flores artificiales.",
     "categoryId": "ecd0a6b2-b849-4b34-9602-125524a4e931",
     "stock": 30,
-    "cost": 20.00,
+    "price": 20.00,
     "urlImage": "https://i.postimg.cc/tgmdb24t/Centro-de-Mesa-Floral.jpg"
   },
   {
@@ -41,7 +41,7 @@
     "description": "Toldo resistente al agua, ideal para bodas al aire libre.",
     "categoryId": "1e011229-5619-436d-b405-39e18889a6d8",
     "stock": 10,
-    "cost": 150.00,
+    "price": 150.00,
     "urlImage": "https://i.postimg.cc/wjM7zHyZ/Toldo-Grande-para-Bodas.jpg"
   },
   {
@@ -50,7 +50,7 @@
     "description": "Mesa rectangular con superficie de cristal templado.",
     "categoryId": "eef30af7-b76d-41ce-8f50-93c653936b8e",
     "stock": 10,
-    "cost": 40.00,
+    "price": 40.00,
     "urlImage": "https://i.postimg.cc/tC5xy2rZ/Mesa-Rectangular-de-Cristal.jpg"
   },
   {
@@ -59,7 +59,7 @@
     "description": "Silla estilo Chiavari dorada, perfecta para eventos de lujo.",
     "categoryId": "13ff90e7-de48-4bf4-a01c-8824e6b46163",
     "stock": 100,
-    "cost": 15.00,
+    "price": 15.00,
     "urlImage": "https://i.postimg.cc/W4DFGjsg/Silla-Chiavari-Dorada.jpg"
   },
   {
@@ -68,7 +68,7 @@
     "description": "Mantel de encaje beige para mesas de estilo rústico.",
     "categoryId": "45d56053-37f4-4e56-a267-740e285ed38d",
     "stock": 50,
-    "cost": 18.00,
+    "price": 18.00,
     "urlImage": "https://i.postimg.cc/dVsGTz7j/Mantel-de-Encaje-Beige.jpg"
   },
   {
@@ -77,7 +77,7 @@
     "description": "Centro de mesa decorativo con velas perfumadas.",
     "categoryId": "ecd0a6b2-b849-4b34-9602-125524a4e931",
     "stock": 40,
-    "cost": 22.00,
+    "price": 22.00,
     "urlImage": "https://i.postimg.cc/Bvv5Rd4n/Centro-de-Mesa-con-Velas.jpg"
   },
   {
@@ -86,7 +86,7 @@
     "description": "Carpa transparente para eventos nocturnos al aire libre.",
     "categoryId": "1e011229-5619-436d-b405-39e18889a6d8",
     "stock": 5,
-    "cost": 200.00,
+    "price": 200.00,
     "urlImage": "https://i.postimg.cc/HxcwkXJG/Carpa-Transparente.png"
   },
   {
@@ -95,7 +95,7 @@
     "description": "Mesa alta de bar con estructura metálica.",
     "categoryId": "eef30af7-b76d-41ce-8f50-93c653936b8e",
     "stock": 25,
-    "cost": 30.00,
+    "price": 30.00,
     "urlImage": "https://i.postimg.cc/mrq9Jkmm/Mesa-Alta-de-Bar.jpg"
   },
   {
@@ -104,7 +104,7 @@
     "description": "Silla acolchada negra, ideal para conferencias.",
     "categoryId": "13ff90e7-de48-4bf4-a01c-8824e6b46163",
     "stock": 75,
-    "cost": 12.00,
+    "price": 12.00,
     "urlImage": "https://i.postimg.cc/vZ2xxDwG/Silla-Acolchada-Negra.jpg"
   },
   {
@@ -113,7 +113,7 @@
     "description": "Mantel rojo para eventos festivos y celebraciones.",
     "categoryId": "45d56053-37f4-4e56-a267-740e285ed38d",
     "stock": 80,
-    "cost": 10.00,
+    "price": 10.00,
     "urlImage": "https://i.postimg.cc/vZ2xxDwG/Silla-Acolchada-Negra.jpg"
   },
   {
@@ -122,7 +122,7 @@
     "description": "Guirnalda decorativa con 30 luces LED cálidas. ",
     "categoryId": "ecd0a6b2-b849-4b34-9602-125524a4e931",
     "stock": 50,
-    "cost": 15.00,
+    "price": 15.00,
     "urlImage": "https://i.postimg.cc/Zn66rmFV/Guirnalda-de-Luces-LED.jpg"
   },
   {
@@ -131,7 +131,7 @@
     "description": "Toldo extra resistente, ideal para zonas ventosas.",
     "categoryId": "1e011229-5619-436d-b405-39e18889a6d8",
     "stock": 8,
-    "cost": 250.00,
+    "price": 250.00,
     "urlImage": "https://i.postimg.cc/TPW1y9cc/Toldo-Resistente-a-Viento.jpg"
   },
   {
@@ -140,7 +140,7 @@
     "description": "Mesa baja de café con estilo vintage.",
     "categoryId": "eef30af7-b76d-41ce-8f50-93c653936b8e",
     "stock": 12,
-    "cost": 20.00,
+    "price": 20.00,
     "urlImage": "https://i.postimg.cc/X73CTTg6/Mesa-de-Caf-Vintage.jpg"
   },
   {
@@ -149,7 +149,7 @@
     "description": "Silla plegable blanca, fácil de transportar y almacenar.",
     "categoryId": "13ff90e7-de48-4bf4-a01c-8824e6b46163",
     "stock": 120,
-    "cost": 8.00,
+    "price": 8.00,
     "urlImage": "https://i.postimg.cc/Dy2SC122/Silla-Plegable-Blanca.jpg"
   },
   {
@@ -158,7 +158,7 @@
     "description": "Mantel verde esmeralda para eventos elegantes.",
     "categoryId": "45d56053-37f4-4e56-a267-740e285ed38d",
     "stock": 40,
-    "cost": 16.00,
+    "price": 16.00,
     "urlImage": "https://i.postimg.cc/rpzWfxNd/Mantel-Verde-Esmeralda.jpg"
   },
   {
@@ -167,7 +167,7 @@
     "description": "Candelabro de cristal con detalles dorados.",
     "categoryId": "ecd0a6b2-b849-4b34-9602-125524a4e931",
     "stock": 20,
-    "cost": 35.00,
+    "price": 35.00,
     "urlImage": "https://i.postimg.cc/zG8FFyQW/Candelabro-de-Cristal.jpg"
   },
   { 
@@ -176,7 +176,7 @@
     "description": "Carpa verde de estilo militar para eventos rústicos.",
     "categoryId": "1e011229-5619-436d-b405-39e18889a6d8",
     "stock": 6,
-    "cost": 180.00,
+    "price": 180.00,
     "urlImage": "https://i.postimg.cc/Qdmk4XLz/Carpa-Verde-Militar.jpg"
   },
   {
@@ -185,7 +185,7 @@
     "description": "Mesa de centro redonda con diseño moderno.",
     "categoryId": "eef30af7-b76d-41ce-8f50-93c653936b8e",
     "stock": 18,
-    "cost": 28.00,
+    "price": 28.00,
     "urlImage": "https://i.postimg.cc/MZ1B3WVY/Mesa-de-Centro-Redonda.jpg"
   },
   {
@@ -194,7 +194,7 @@
     "description": "Silla de plástico apilable, ideal para eventos grandes.",
     "categoryId": "13ff90e7-de48-4bf4-a01c-8824e6b46163",
     "stock": 200,
-    "cost": 6.00,
+    "price": 6.00,
     "urlImage": "https://i.postimg.cc/C54zhx4T/Silla-de-Pl-stico-Apilable.jpg"
   },
   {
@@ -203,7 +203,7 @@
     "description": "Mantel azul marino para eventos náuticos.",
     "categoryId": "45d56053-37f4-4e56-a267-740e285ed38d",
     "stock": 70,
-    "cost": 14.00,
+    "price": 14.00,
     "urlImage": "https://i.postimg.cc/PrkWdLTc/Mantel-Azul-Marino.jpg"
   },
   {
@@ -212,7 +212,7 @@
     "description": "Porta velas de madera con acabado rústico.",
     "categoryId": "ecd0a6b2-b849-4b34-9602-125524a4e931",
     "stock": 25,
-    "cost": 18.00,
+    "price": 18.00,
     "urlImage": "https://i.postimg.cc/KzB1WNkY/Porta-Velas-R-stico.jpg"
   },
   {
@@ -221,7 +221,7 @@
     "description": "Toldo azul impermeable, perfecto para eventos en la playa.",
     "categoryId": "1e011229-5619-436d-b405-39e18889a6d8",
     "stock": 12,
-    "cost": 170.00,
+    "price": 170.00,
     "urlImage": "https://i.postimg.cc/J4PGStnj/Toldo-Impermeable-Azul.jpg"
   },
   {
@@ -230,7 +230,7 @@
     "description": "Mesa cuadrada con superficie de mármol.",
     "categoryId": "eef30af7-b76d-41ce-8f50-93c653936b8e",
     "stock": 5,
-    "cost": 50.00,
+    "price": 50.00,
     "urlImage": "https://i.postimg.cc/4yR94Mkt/Mesa-Cuadrada-de-M-rmol.jpg"
   },
   {
@@ -239,7 +239,7 @@
     "description": "Silla de acrílico transparente, ideal para eventos modernos.",
     "categoryId": "13ff90e7-de48-4bf4-a01c-8824e6b46163",
     "stock": 60,
-    "cost": 25.00,
+    "price": 25.00,
     "urlImage": "https://i.postimg.cc/MZ0cb9JP/Silla-Transparente.jpg"
   },
   {
@@ -248,7 +248,7 @@
     "description": "Mantel de lino gris para eventos corporativos.",
     "categoryId": "45d56053-37f4-4e56-a267-740e285ed38d",
     "stock": 90,
-    "cost": 20.00,
+    "price": 20.00,
     "urlImage": "https://i.postimg.cc/9QLZPJZ5/Mantel-de-Lino-Gris.jpg"
   },
   {
@@ -257,7 +257,7 @@
     "description": "Guirnalda decorativa con flores artificiales.",
     "categoryId": "ecd0a6b2-b849-4b34-9602-125524a4e931",
     "stock": 40,
-    "cost": 12.00,
+    "price": 12.00,
     "urlImage": "https://i.postimg.cc/3Rsg4Npk/Guirnalda-de-Flores.jpg"
   },
   {
@@ -266,7 +266,7 @@
     "description": "Toldo grande con espacio para catering.",
     "categoryId": "1e011229-5619-436d-b405-39e18889a6d8",
     "stock": 7,
-    "cost": 220.00,
+    "price": 220.00,
     "urlImage": "https://i.postimg.cc/4x0nNMpd/Toldo-para-Catering.jpg"
   },
   {
@@ -275,7 +275,7 @@
     "description": "Mesa auxiliar con detalles dorados, perfecta para decoraciones lujosas.",
     "categoryId": "eef30af7-b76d-41ce-8f50-93c653936b8e",
     "stock": 10,
-    "cost": 22.00,
+    "price": 22.00,
     "urlImage": "https://i.postimg.cc/vT764zbK/Mesa-Auxiliar-Dorada.jpg"
   },
   {
@@ -284,7 +284,7 @@
     "description": "Silla clásica de madera con acabado natural.",
     "categoryId": "13ff90e7-de48-4bf4-a01c-8824e6b46163",
     "stock": 30,
-    "cost": 35.00,
+    "price": 35.00,
     "urlImage": "https://i.postimg.cc/25PqTJ5J/Silla-Cl-sica-de-Madera.jpg"
   },
   {
@@ -293,7 +293,7 @@
     "description": "Mantel blanco bordado para eventos formales.",
     "categoryId": "45d56053-37f4-4e56-a267-740e285ed38d",
     "stock": 100,
-    "cost": 25.00,
+    "price": 25.00,
     "urlImage": "https://i.postimg.cc/HWM0G0DX/Mantel-Blanco-Bordado.jpg"
   }
 ]

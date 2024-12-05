@@ -34,8 +34,8 @@ namespace FernandaRentals.Database.Entities
 
         [Display(Name = "Costo")]
         [Required(ErrorMessage = "El {0} es obligatorio.")]
-        [Column("cost")]
-        public decimal Cost { get; set; }
+        [Column("price")]
+        public decimal Price { get; set; } // se cambia de COST a PRICE para poder usar el paquete npm react-use-cart en frontend
         // las comunes del campo de auditoria
         public virtual UserEntity CreatedByUser { get; set; }
         public virtual UserEntity UpdatedByUser { get; set; }

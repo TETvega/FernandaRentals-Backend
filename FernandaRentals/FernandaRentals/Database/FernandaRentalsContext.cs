@@ -87,7 +87,7 @@ namespace FernandaRentals.Database
                 .HasPrecision(18, 2);
 
             modelBuilder.Entity<ProductEntity>()
-                .Property(e => e.Cost)
+                .Property(e => e.Price)
                 .HasPrecision(18, 2);
             modelBuilder.Entity<DetailEntity>()
             .Property(d => d.UnitPrice)

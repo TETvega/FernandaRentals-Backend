@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FernandaRentals.Migrations
 {
     [DbContext(typeof(FernandaRentalsContext))]
-    [Migration("20241126211511_initialMig")]
-    partial class initialMig
+    [Migration("20241204225752_changedCostFieldNameToPriceAtProductsTable")]
+    partial class changedCostFieldNameToPriceAtProductsTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -361,11 +361,6 @@ namespace FernandaRentals.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("category_id");
 
-                    b.Property<decimal>("Cost")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("cost");
-
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")
@@ -385,6 +380,11 @@ namespace FernandaRentals.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("name");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("price");
 
                     b.Property<int>("Stock")
                         .HasColumnType("int")
