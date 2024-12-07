@@ -1,7 +1,9 @@
-﻿using FernandaRentals.Constants;
+﻿using AutoMapper;
+using FernandaRentals.Constants;
 using FernandaRentals.Database;
 using FernandaRentals.Database.Entities;
 using FernandaRentals.Dtos.Auth;
+using FernandaRentals.Dtos.ClientType;
 using FernandaRentals.Dtos.Common;
 using FernandaRentals.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -21,13 +23,15 @@ namespace FernandaRentals.Services
         private readonly FernandaRentalsContext _context;
         private readonly ILogger<UserEntity> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
         public AuthService(
             SignInManager<UserEntity> signInManager,
             UserManager<UserEntity> userManager,
             FernandaRentalsContext context,
             ILogger<UserEntity> logger,
-            IConfiguration configuration
+            IConfiguration configuration,
+            IMapper mapper
             )
         {
             this._signInManager = signInManager;
@@ -35,6 +39,7 @@ namespace FernandaRentals.Services
             this._context = context;
             this._logger = logger;
             this._configuration = configuration;
+            this._mapper = mapper;
         }
 
         public async Task<ResponseDto<LoginResponseDto>> LoginAsync(LoginDto dto)
@@ -49,21 +54,20 @@ namespace FernandaRentals.Services
                 // Generación del Token
                 var userEntity = await _userManager.FindByEmailAsync(dto.Email);
 
-                var clientTypeName = await _context.Clients
+                var clientTypeEntity = await _context.Clients
                     .Where(c => c.UserId == userEntity.Id) 
                     .Select(c => _context.TypesOfClient
                         .Where(tc => tc.Id == c.ClientTypeId) 
-                        .Select(tc => tc.Name) 
                         .FirstOrDefault()) 
                     .FirstOrDefaultAsync();
 
-                if (clientTypeName != null)
+                if (clientTypeEntity != null)
                 {
                     // Aquí puedes usar el nombre del tipo de cliente
-                    Console.WriteLine(clientTypeName);
+                    Console.WriteLine(clientTypeEntity);
                 }
 
-
+                var clientTypeDto = _mapper.Map<ClientTypeDto>(clientTypeEntity);
 
                 // ClaimList creation
                 List<Claim> authClaims = await GetClaims(userEntity);
@@ -92,7 +96,7 @@ namespace FernandaRentals.Services
                         Token = new JwtSecurityTokenHandler().WriteToken(jwtToken), // convertir token en string
                         TokenExpiration = jwtToken.ValidTo,
                         RefreshToken = refreshToken,
-                        ClientTypeName = clientTypeName
+                        ClientType = clientTypeDto
                     }
                 };
             }

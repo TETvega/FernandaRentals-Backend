@@ -1,4 +1,6 @@
-﻿namespace FernandaRentals.Dtos.Auth
+﻿using FernandaRentals.Dtos.ClientType;
+
+namespace FernandaRentals.Dtos.Auth
 {
     public class LoginResponseDto
     {
@@ -7,7 +9,7 @@
         public string Token { get; set; }
         public DateTime TokenExpiration { get; set; }
         public string RefreshToken { get; set; }
-        public string ClientTypeName { get; set; }
+        public ClientTypeDto ClientType { get; set; }
 
 
     }

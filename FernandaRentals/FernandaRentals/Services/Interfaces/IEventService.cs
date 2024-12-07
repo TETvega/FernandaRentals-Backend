@@ -1,6 +1,7 @@
 ﻿using FernandaRentals.Dtos.CategoriesProduct;
 using FernandaRentals.Dtos.Common;
 using FernandaRentals.Dtos.Events;
+using FernandaRentals.Dtos.Events.Helper_Dto;
 
 namespace FernandaRentals.Services.Interfaces
 {
@@ -13,5 +14,6 @@ namespace FernandaRentals.Services.Interfaces
         Task<ResponseDto<List<EventDto>>> GetAllEventsAsync(string opt);
 
         Task<ResponseDto<List<EventDto>>> GetAllEventsByUserIdAsync();
+        Task<ResponseDto<List<ProductAvailabilityError>>> ValidateProductDatesWithAvailability(ProductAvailabilityDto dto);
     }
 }

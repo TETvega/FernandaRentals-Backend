@@ -3,6 +3,7 @@ using FernandaRentals.Constants;
 using FernandaRentals.Database;
 using FernandaRentals.Database.Entities;
 using FernandaRentals.Dtos.Common;
+using FernandaRentals.Dtos.DashBoard;
 using FernandaRentals.Dtos.Events;
 using FernandaRentals.Dtos.Events.Helper_Dto;
 using FernandaRentals.Dtos.Notes;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -606,6 +608,60 @@ namespace FernandaRentals.Services
                 Message = $"El o los productos: {errorMessagesString}no exiten en la base de datos."
             };
         }
+
+
+        public async Task<ResponseDto<List<ProductAvailabilityError>>> ValidateProductDatesWithAvailability(ProductAvailabilityDto dto)
+        {
+            var unavailableProducts = new List<ProductAvailabilityError>();
+
+            var productIdsInDto = dto.Products.Select(p => p.ProductId).ToList();
+            var productEntityList = await _context.Products.ToListAsync();
+
+            var existingReservations = await _context.Reservations
+                        .Where(reservation => productIdsInDto.Contains(reservation.ProductId))
+                        .ToListAsync();
+
+            for (var date = dto.EventStartDate; date <= dto.EventEndDate; date = date.AddDays(1))
+            {
+                foreach (var product in dto.Products)
+                {
+                    var productId = product.ProductId;
+                    var cantidadSolicitada = product.Quantity;
+
+                    // Calcular la cantidad total de un producto reservado para ese día
+                    var existingTotalCount = existingReservations
+                        .Where(reservation => reservation.ProductId == productId && reservation.Date == date)
+                        .Sum(reservation => reservation.Count);
+
+                    // Obtener el producto de la lista de productos existentes
+                    var productEntity = productEntityList.FirstOrDefault(p => p.Id == productId);
+                    var stockProducto = productEntity?.Stock ?? 0;
+
+                    // Verificar si la cantidad solicitada se puede cubrir con el stock disponible
+                    if (existingTotalCount + cantidadSolicitada > stockProducto)
+                    {
+                        var productoEnData = productEntityList.FirstOrDefault(p => p.Id == productId);
+                        if (productoEnData != null)
+                        {
+                            // Si no hay suficiente stock, agregar el error con el producto y la fecha
+                            unavailableProducts.Add(new ProductAvailabilityError
+                            {
+                                Product = productoEnData,
+                                UnavailableDate = date
+                            });
+                        }
+                    }
+                }
+            }
+
+
+            if (unavailableProducts.Count > 0) return ResponseHelper.ResponseError<List<ProductAvailabilityError>>(400, "Algunos productos no están disponibles en las fechas solicitadas. Verifique las fechas o la cantidad de los productos.", unavailableProducts);
+
+            return ResponseHelper.ResponseSuccess<List<ProductAvailabilityError>> (200, "Todos los productos solicitados están disponibles para las fechas indicadas.");
+
+        }
+
+
 
 
     }

@@ -1,6 +1,7 @@
 ﻿using FernandaRentals.Constants;
 using FernandaRentals.Dtos.Common;
 using FernandaRentals.Dtos.Events;
+using FernandaRentals.Dtos.Events.Helper_Dto;
 using FernandaRentals.Dtos.Products;
 using FernandaRentals.Services;
 using FernandaRentals.Services.Interfaces;
@@ -72,6 +73,14 @@ namespace FernandaRentals.Controllers
         public async Task<ActionResult<ResponseDto<EventDto>>> CancelEvent(Guid id)
         {
             var response = await _eventService.CancelEventAsync(id);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpPost("validate-products")]
+        [Authorize(Roles = $"{RolesConstants.ADMIN}, {RolesConstants.CLIENT}")]
+        public async Task<ActionResult<ResponseDto<List<ProductAvailabilityError>>>> ValidateProducts (ProductAvailabilityDto dto)
+        {
+            var response = await _eventService.ValidateProductDatesWithAvailability(dto);
             return StatusCode(response.StatusCode, response);
         }
     }

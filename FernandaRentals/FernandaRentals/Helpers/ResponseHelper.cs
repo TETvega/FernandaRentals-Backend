@@ -4,13 +4,14 @@ namespace InmobiliariaUNAH.Helpers
 {
     public static class ResponseHelper
     { 
-        public static ResponseDto<T> ResponseError<T>(int statusCode, string message)
+        public static ResponseDto<T> ResponseError<T>(int statusCode, string message, T data = default)
         {
             return new ResponseDto<T>
             {
                 StatusCode = statusCode,
                 Status = false,
-                Message = message
+                Message = message,
+                Data = data
             };
         }
 
