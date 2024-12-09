@@ -5,6 +5,7 @@ using FernandaRentals.Dtos.Common;
 using FernandaRentals.Dtos.Notes;
 using FernandaRentals.Dtos.Products;
 using FernandaRentals.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -14,11 +15,13 @@ namespace FernandaRentals.Services
     {
         private readonly FernandaRentalsContext _context;
         private readonly IMapper _mapper;
+        private readonly UserManager<UserEntity> _userManager;
 
-        public NotesService(FernandaRentalsContext context, IMapper mapper)
+        public NotesService(FernandaRentalsContext context, IMapper mapper, UserManager<UserEntity> userManager)
         {
             _context = context;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         //Eventos de listar
@@ -59,7 +62,9 @@ namespace FernandaRentals.Services
         }
         public async Task<ResponseDto<List<NoteDto>>> GetNoteByEventIdListAsync(Guid id)
         {
-            var noteEntities = await _context.Notes.Where(note => note.EventId == id).ToListAsync();
+            var noteEntities = await _context.Notes.Where(note => note.EventId == id)
+                 .Include(e => e.CreatedByUser)
+                .ToListAsync();
 
             if (!noteEntities.Any())
             {
@@ -70,8 +75,9 @@ namespace FernandaRentals.Services
                     Message = "No se encontraron registros de notas para el evento especificado"
                 };
             }
-
+            
             var noteDtos = _mapper.Map<List<NoteDto>>(noteEntities);
+  
 
             return new ResponseDto<List<NoteDto>>
             {
@@ -103,7 +109,10 @@ namespace FernandaRentals.Services
             }
             _context.Notes.Add(noteEntity);
             await _context.SaveChangesAsync();
+
             var noteDto = _mapper.Map<NoteDto>(noteEntity);
+            var userEntity = await _userManager.FindByIdAsync(noteEntity.CreatedBy);
+            noteDto.UserName = userEntity.Name;
             //exito al registrar
             return new ResponseDto<NoteDto>
             {

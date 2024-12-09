@@ -32,8 +32,9 @@ namespace FernandaRentals.Helpers
                 .ForMember(dest => dest.EventDetails, opt => opt.Ignore());
 
             CreateMap<EventEntity, EventDto>()
-       .ForMember(dest => dest.EventDetails, opt => opt.MapFrom(src => src.EventDetails))
-       .ForMember(dest => dest.Client, opt => opt.MapFrom(src => src.Client));
+               .ForMember(dest => dest.EventDetails, opt => opt.MapFrom(src => src.EventDetails))
+               .ForMember(dest => dest.Client, opt => opt.MapFrom(src => src.Client));
+
 
             CreateMap<ClientEntity, ClientDto>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.User.Name))
@@ -85,7 +86,10 @@ namespace FernandaRentals.Helpers
 
         private void MapsForNotes()
         {
-            CreateMap<NoteEntity, NoteDto>();
+            CreateMap<NoteEntity, NoteDto>()
+               .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.CreatedByUser.Id))    
+               .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.CreatedByUser.Name));
+
             CreateMap<NoteCreateDto, NoteEntity>();
             CreateMap<NoteEditDto, NoteEntity>()
             .ForMember(dest => dest.Id, opt => opt.Ignore());

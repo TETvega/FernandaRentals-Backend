@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using FernandaRentals.Dtos.Notes;
 
 namespace FernandaRentals.Database.Entities
 {
@@ -51,8 +52,10 @@ namespace FernandaRentals.Database.Entities
         public string PaypalCaptureId { get; set; }
 
 
-        // agrgando una lista de evendetaids 
+        // agrgando una lista de evendetaids  y listaNotas
         public virtual ICollection<DetailEntity> EventDetails { get; set; } = new List<DetailEntity>();
+
+        public virtual ICollection<NoteEntity> EventNotes { get; set; } = new List<NoteEntity>();
         // las comunes del campo de auditoria
         public virtual UserEntity CreatedByUser { get; set; }
         public virtual UserEntity UpdatedByUser { get; set; }

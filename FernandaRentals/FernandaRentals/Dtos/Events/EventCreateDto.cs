@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using FernandaRentals.Dtos.Events.Helper_Dto;
+using FernandaRentals.Dtos.Notes;
 
 namespace FernandaRentals.Dtos.Events
 {
@@ -10,7 +11,6 @@ namespace FernandaRentals.Dtos.Events
         [Display(Name = "Nombre")]
         [Required(ErrorMessage = "El {0} del evento es requerido.")]
         public string Name { get; set; }
-
 
         [Display(Name = "Fecha de Inicio")]
         [Required(ErrorMessage = "La {0} es obligatoria.")]
@@ -28,5 +28,7 @@ namespace FernandaRentals.Dtos.Events
         [Required(ErrorMessage = "El {0} es obligatorio.")]
         public string PaypalCaptureId { get; set; }
         public IEnumerable<EventProducDto> Productos { get; set; }
+
+        public IEnumerable<NoteDto> EventNotes { get; set; } 
     }
 }

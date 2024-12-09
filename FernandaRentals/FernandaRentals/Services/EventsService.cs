@@ -52,7 +52,7 @@ namespace FernandaRentals.Services
             switch (opt)
             {
                 case EventOrder.PAST:
-                    // mas recientes primero
+                    // más recientes primero
                     eventsEntity = await _context.Events
                         .Where(e => e.StartDate < DateTime.Now)
                         .OrderByDescending(e => e.StartDate)
@@ -62,11 +62,13 @@ namespace FernandaRentals.Services
                             .ThenInclude(c => c.ClientType)
                         .Include(e => e.EventDetails)
                             .ThenInclude(ed => ed.Product)
+                        .Include(e => e.EventNotes)
+                            .ThenInclude(en => en.CreatedByUser)  
                         .ToListAsync();
                     break;
 
                 case EventOrder.FUTURE:
-                    // mas cercanos primero
+                    // más cercanos primero
                     eventsEntity = await _context.Events
                         .Where(e => e.StartDate >= DateTime.Now)
                         .OrderBy(e => e.StartDate)
@@ -76,25 +78,29 @@ namespace FernandaRentals.Services
                             .ThenInclude(c => c.ClientType)
                         .Include(e => e.EventDetails)
                             .ThenInclude(ed => ed.Product)
+                        .Include(e => e.EventNotes) 
+                            .ThenInclude(en => en.CreatedByUser)  
                         .ToListAsync();
                     break;
 
                 case EventOrder.TODAY:
-                    //  eventos activos hoy (fecha actual dentro del rango de fechas)
+                    // eventos activos hoy (fecha actual dentro del rango de fechas)
                     eventsEntity = await _context.Events
                         .Where(e => e.StartDate <= DateTime.Now && e.EndDate >= DateTime.Now)
-                        .OrderBy(e => e.StartDate) 
+                        .OrderBy(e => e.StartDate)
                         .Include(e => e.Client)
                             .ThenInclude(c => c.User)
                         .Include(e => e.Client)
                             .ThenInclude(c => c.ClientType)
                         .Include(e => e.EventDetails)
                             .ThenInclude(ed => ed.Product)
+                        .Include(e => e.EventNotes) 
+                            .ThenInclude(en => en.CreatedByUser)  
                         .ToListAsync();
                     break;
 
                 case EventOrder.ALL:
-                    //  Todos los eventos
+                    // Todos los eventos
                     eventsEntity = await _context.Events
                         .OrderBy(e => e.StartDate)
                         .Include(e => e.Client)
@@ -103,6 +109,8 @@ namespace FernandaRentals.Services
                             .ThenInclude(c => c.ClientType)
                         .Include(e => e.EventDetails)
                             .ThenInclude(ed => ed.Product)
+                        .Include(e => e.EventNotes) 
+                            .ThenInclude(en => en.CreatedByUser)  
                         .ToListAsync();
                     break;
 
@@ -116,6 +124,7 @@ namespace FernandaRentals.Services
                     };
             }
 
+            // Aquí aplicas el mapeo, se mapeará UserName para cada EventNote
             var eventsDto = _mapper.Map<List<EventDto>>(eventsEntity);
 
             return new ResponseDto<List<EventDto>>
@@ -126,6 +135,7 @@ namespace FernandaRentals.Services
                 Data = eventsDto
             };
         }
+
 
 
 
@@ -145,11 +155,22 @@ namespace FernandaRentals.Services
                 .Include(e => e.Client)
                 .Include(e => e.EventDetails)
                     .ThenInclude(ed => ed.Product)
+                .Include(e => e.EventNotes)
                 .Where(e => e.ClientId == clientEntity.Id)
                 .OrderByDescending(e => e.StartDate)
                 .ToListAsync();
 
             var eventsDto = _mapper.Map<List<EventDto>>(eventsEntity);
+
+            foreach (var ed in eventsDto)
+            {
+                foreach (var en in ed.EventNotes)
+                {
+                    var userEnt = await _userManager.FindByIdAsync(en.UserId);
+                    en.UserName = userEnt != null ? userEnt.Name : "Desconocido";
+                }
+            }
+
 
             return new ResponseDto<List<EventDto>>
             {
@@ -166,6 +187,7 @@ namespace FernandaRentals.Services
             .Include(e => e.Client)
             .Include(e => e.EventDetails)
             .ThenInclude(ed => ed.Product)
+            .Include(e => e.EventNotes)
             .FirstOrDefaultAsync(ev => ev.Id == id);
 
             if (eventEntity == null) return ResponseHelper.ResponseError<EventDto>(404, "No se encontró el evento");

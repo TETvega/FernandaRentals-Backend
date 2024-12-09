@@ -20,6 +20,8 @@ namespace FernandaRentals.Database.Entities
         [Column("description")]
         public string Description { get; set; }
 
+        //public virtual  string UserName { get; set; }
+
         // las comunes del campo de auditoria
         public virtual UserEntity CreatedByUser { get; set; }
         public virtual UserEntity UpdatedByUser { get; set; }
