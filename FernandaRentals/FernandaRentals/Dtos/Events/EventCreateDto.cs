@@ -24,6 +24,9 @@ namespace FernandaRentals.Dtos.Events
         [Required(ErrorMessage = "La {0} es obligatoria.")]
         public string Location { get; set; }
 
+        [Display(Name = "Id transaccion de Paypal")]
+        [Required(ErrorMessage = "El {0} es obligatorio.")]
+        public string PaypalCaptureId { get; set; }
         public IEnumerable<EventProducDto> Productos { get; set; }
     }
 }

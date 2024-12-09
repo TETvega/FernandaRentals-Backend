@@ -18,6 +18,7 @@ namespace FernandaRentals.Dtos.Events
         public decimal EventCost { get; set; }
         public decimal Discount { get; set; }
         public decimal Total { get; set; }
+        public string PaypalCaptureId { get; set; }
 
         // Incluimos el objeto completo del cliente
 

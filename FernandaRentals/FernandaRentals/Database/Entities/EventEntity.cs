@@ -44,6 +44,12 @@ namespace FernandaRentals.Database.Entities
         [Column("total")]
         public decimal Total { get; set; }
 
+        [Display(Name = "Id transaccion de Paypal")]
+        [Required(ErrorMessage = "El {0} es obligatorio.")]
+        [Column("paypal_capture_id")]
+        [StringLength(50)]
+        public string PaypalCaptureId { get; set; }
+
 
         // agrgando una lista de evendetaids 
         public virtual ICollection<DetailEntity> EventDetails { get; set; } = new List<DetailEntity>();

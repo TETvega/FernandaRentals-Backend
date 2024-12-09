@@ -4,6 +4,7 @@ using FernandaRentals.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FernandaRentals.Migrations
 {
     [DbContext(typeof(FernandaRentalsContext))]
-    partial class FernandaRentalsContextModelSnapshot : ModelSnapshot
+    [Migration("20241208053847_AddedPaypalCaptureIdFieldAtEventsTable")]
+    partial class AddedPaypalCaptureIdFieldAtEventsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -269,8 +272,7 @@ namespace FernandaRentals.Migrations
 
                     b.Property<string>("PaypalCaptureId")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("paypal_capture_id");
 
                     b.Property<DateTime>("StartDate")

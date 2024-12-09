@@ -146,6 +146,7 @@ namespace FernandaRentals.Services
                 .Include(e => e.EventDetails)
                     .ThenInclude(ed => ed.Product)
                 .Where(e => e.ClientId == clientEntity.Id)
+                .OrderByDescending(e => e.StartDate)
                 .ToListAsync();
 
             var eventsDto = _mapper.Map<List<EventDto>>(eventsEntity);
