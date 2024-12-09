@@ -1,0 +1,27 @@
+meta {
+  name: GetMonthFinancialReport
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{PATH}}/admin/financials/monthly
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "month": {{MONTH}},
+    "year": {{YEAR}},
+    "monthName": "{{MONTHNAME}}",
+    "monthShortName": "{{MONTHSHORTNAME}}"
+  }
+}
+
+vars:pre-request {
+  MONTH: 11
+  YEAR: 24
+  MONTHNAME: noviembre
+  MONTHSHORTNAME: nov
+}

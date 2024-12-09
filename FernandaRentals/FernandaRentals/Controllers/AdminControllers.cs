@@ -28,6 +28,15 @@ namespace FernandaRentals.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
+        [HttpPost("financials/monthly")]
+        public async Task<ActionResult<ResponseDto<FinancialReportDto>>> GetMonthlyFinancialReport(MonthDataDto dto)
+        {
+            var response = await _adminService.GetMonthlyFinancialReport(dto);
+            return StatusCode(response.StatusCode, response);
+        }
+
+
+
         [HttpGet("clients-data")]
         public async Task<ActionResult<ResponseDto<List<ClientsDataDto>>>> ClientsData()
         {

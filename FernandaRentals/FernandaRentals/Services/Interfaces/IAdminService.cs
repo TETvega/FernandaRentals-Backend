@@ -11,5 +11,6 @@ namespace FernandaRentals.Services.Interfaces
         Task<ResponseDto<List<UserDto>>> GetAdminUsers();
         Task<ResponseDto<List<ClientsDataDto>>> GetClientsData();
         Task<ResponseDto<DashBoardDto>> GetDashBoardData();
+        Task<ResponseDto<FinancialReportDto>> GetMonthlyFinancialReport(MonthDataDto monthData);
     }
 }

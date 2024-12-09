@@ -243,5 +243,60 @@ namespace FernandaRentals.Services
 
             return ResponseHelper.ResponseSuccess<UserAdminEditDto>(200, $"{MessagesConstant.UPDATE_SUCCESS}");
         }
+
+        public async Task<ResponseDto<FinancialReportDto>> GetMonthlyFinancialReport(MonthDataDto monthData)
+        {
+           
+            DateTime startOfMonth = new DateTime(monthData.Year, monthData.Month, 1); // primer día del mes
+            DateTime endOfMonth = startOfMonth.AddMonths(1).AddDays(-1); // último día del mes
+
+            try
+            {
+               // eventos del mes seleccionado
+                var events = await _context.Events
+                    .Where(e => e.StartDate >= startOfMonth && e.EndDate <= endOfMonth)
+                    .ToListAsync();
+
+                if (events.Count == 0) return ResponseHelper.ResponseError<FinancialReportDto>(404, $"No hay eventos para el mes de {monthData.MonthName} {monthData.Year}.");
+                
+
+                // total de dinero
+                var totalRevenue = await _context.Events
+                    .Where(e => e.StartDate >= startOfMonth && e.EndDate <= endOfMonth)
+                    .SumAsync(e => e.Total);
+
+                var totalDiscounts = await _context.Events
+                    .Where(e => e.StartDate >= startOfMonth && e.EndDate <= endOfMonth)
+                    .SumAsync(e => e.Discount);
+
+                var eventCount = await _context.Events
+                    .Where(e => e.StartDate >= startOfMonth && e.EndDate <= endOfMonth)
+                    .CountAsync();
+
+                // promedio de los ingresos
+                var averageRevenue = eventCount > 0 ? totalRevenue / eventCount : 0;
+
+                // Crear el DTO de reporte financiero
+                var report = new FinancialReportDto
+                {
+                    TotalRevenue = totalRevenue,
+                    TotalDiscounts = totalDiscounts,
+                    EventCount = eventCount,
+                    AverageRevenue = averageRevenue
+                };
+
+                return ResponseHelper.ResponseSuccess<FinancialReportDto>(200, $"Reporte del mes de {monthData.MonthName} {monthData.Year} recibido correctamente.", report);
+            }
+            catch (Exception e)
+            {
+                // Manejo de errores
+                _logger.LogError(e, "Error al hacer la consulta en el try.");
+                return ResponseHelper.ResponseError<FinancialReportDto>(500, "Se produjo un error al obtener los datos.");
+            }
+        }
+
+
+
+
     }
 }
