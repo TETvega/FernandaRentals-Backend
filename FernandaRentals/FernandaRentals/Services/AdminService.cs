@@ -282,7 +282,7 @@ namespace FernandaRentals.Services
                     TotalRevenue = totalRevenue,
                     TotalDiscounts = totalDiscounts,
                     EventCount = eventCount,
-                    AverageRevenue = averageRevenue
+                    AverageRevenue = Math.Round(averageRevenue, 2, MidpointRounding.ToEven)
                 };
 
                 return ResponseHelper.ResponseSuccess<FinancialReportDto>(200, $"Reporte del mes de {monthData.MonthName} {monthData.Year} recibido correctamente.", report);
