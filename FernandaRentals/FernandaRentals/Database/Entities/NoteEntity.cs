@@ -3,17 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FernandaRentals.Database.Entities
 {
-    [Table("notes", Schema = "dbo")]
-    public class NoteEntity
+    [Table("events_notes", Schema = "dbo")]
+    public class NoteEntity : BaseEntity
     {
-        [Key]
-        [Required]
-        [Column("id")]
-        public Guid Id { get; set; }
-
-        [Display(Name ="Titulo de Nota")]
-        [Column("title")]
-        public string Title { get; set; }
 
         [Display(Name = "Evento Id")]
         [Required(ErrorMessage = "El {0} es obligatorio.")]
@@ -27,5 +19,11 @@ namespace FernandaRentals.Database.Entities
         [StringLength(500, ErrorMessage = "La {0} no puede tener más de {1} caracteres.")]
         [Column("description")]
         public string Description { get; set; }
+
+        //public virtual  string UserName { get; set; }
+
+        // las comunes del campo de auditoria
+        public virtual UserEntity CreatedByUser { get; set; }
+        public virtual UserEntity UpdatedByUser { get; set; }
     }
 }

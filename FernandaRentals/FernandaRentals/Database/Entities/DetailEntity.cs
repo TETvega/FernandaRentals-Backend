@@ -1,11 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using InmobiliariaUNAH.Database.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FernandaRentals.Database.Entities
 {
-    [Table("detail", Schema = "dbo")]
-    public class DetailEntity : BaseEntity
+    [Table("events_details", Schema = "dbo")]
+    public class DetailEntity : AuditEntity
     {
+        [Key]
+        [Display(Name = "Id")]
+        [Required(ErrorMessage = "El {0} es Requerido")]
+        [Column("id")]
+        public Guid Id { get; set; }
 
         [Display(Name = "Id del Evento")]
         [Required(ErrorMessage = "El {0} es obligatorio.")]
@@ -32,9 +38,13 @@ namespace FernandaRentals.Database.Entities
         [Column("unit_price")]
         public decimal UnitPrice { get; set; }
 
-        //[Display(Name = "Precio Total")]
-        //[Column("total_price")]
-        ////funcion fecha del total a pagar en un producto
-        //public decimal TotalPrice {  get; set; } // no pude expresarlo como funcion flecha en la base no aparecia
+        [Display(Name = "Precio Total")]
+        [Column("total_price")]
+        //funcion fecha del total a pagar en un producto
+        public decimal TotalPrice { get; set; } // no pude expresarlo como funcion flecha en la base no aparecia
+
+        // las comunes del campo de auditoria
+        public virtual UserEntity CreatedByUser { get; set; }
+        public virtual UserEntity UpdatedByUser { get; set; }
     }
 }

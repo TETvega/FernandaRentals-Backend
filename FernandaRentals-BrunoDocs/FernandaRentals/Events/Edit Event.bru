@@ -1,0 +1,35 @@
+meta {
+  name: Edit Event
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{PATH}}/eventos/92658e53-5938-4741-9341-08dd16c9d8f7
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{TOKEN}}
+}
+
+body:json {
+  {
+    "name": "Prueba - Editado en Bruno",
+    "startDate": "2025-01-21T21:05:25.918Z",
+    "endDate": "2025-02-22T05:37:41.828Z",
+    "location": "Palmira Casa G3",
+    "total": "234",
+    "productos": [
+      {
+        "productId": "ed94b902-dc8b-4f40-9c4f-8cf5f00c35a4",
+        "quantity": 4
+      },
+      {
+        "productId": "edbf7a6f-7d65-4708-89fc-18c61ed2a452",
+        "quantity": 2
+      }
+    ]
+  }
+}

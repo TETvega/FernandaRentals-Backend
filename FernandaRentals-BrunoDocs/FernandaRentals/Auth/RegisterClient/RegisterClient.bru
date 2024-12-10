@@ -1,0 +1,21 @@
+meta {
+  name: RegisterClient
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{PATH}}\auth\register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "puthqs04@gmail.com",
+    "password": "*Temporal02",
+    "confirmPassword": "*Temporal02",
+    "clientName": "Ruth Quintanilla",
+    "clientTypeId": "d3a7b2c4-5d6f-4f8e-9a2c-0c9e5b7d1a19"
+  }
+}

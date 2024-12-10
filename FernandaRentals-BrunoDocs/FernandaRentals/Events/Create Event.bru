@@ -1,0 +1,41 @@
+meta {
+  name: Create Event
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{PATH}}/eventos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{TOKEN}}
+}
+
+body:json {
+  {
+    "name": "{{NAME}}",
+    "startDate": "{{STARTDATE}}",
+    "endDate": "{{ENDDATE}}",
+    "location": "{{LOCATION}}",
+    "paypalCaptureId": "{{PAYPAL_CAPTURE_ID}}",
+    "productos": [
+    {
+      "productId": "c9677c7d-e1a6-4fb4-842d-1a2f746fc5a4",
+      "quantity": 3
+    }
+    ]
+  }
+  
+  
+}
+
+vars:pre-request {
+  NAME: Prueba Guadar paypalCaptureId
+  STARTDATE: 2024-12-28
+  ENDDATE: 2024-12-30
+  LOCATION: Lab Sistemas yuju
+  PAYPAL_CAPTURE_ID: 12345
+}

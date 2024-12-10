@@ -11,6 +11,6 @@ namespace FernandaRentals.Dtos.Products
         public CategoryProductDto Category { get; set; } // estaba en 'CategoryProductEntity' y se cambió a 'CategoryProductDTO'
         // quite el virtal no se si eso se ocupa aqui para el Category Product
         public int Stock { get; set; }
-        public decimal Cost { get; set; }
+        public decimal Price { get; set; }
     }
 }

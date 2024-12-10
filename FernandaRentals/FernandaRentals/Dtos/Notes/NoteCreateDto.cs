@@ -7,7 +7,7 @@ namespace FernandaRentals.Dtos.Notes
     public class NoteCreateDto
     {
         public Guid Id { get; set; }
-        public string Title { get; set; }
+        public string Name { get; set; }
 
         [Display(Name = "Evento Id")]
         [Required(ErrorMessage = "El {0} es obligatorio.")]

@@ -13,50 +13,63 @@ namespace FernandaRentals
 {
     public class Startup
     {
-        private readonly IConfiguration Configuration;
+        private IConfiguration Configuration { get; }
 
         // Creacion del Constructor de Startup
-        public Startup(
-            IConfiguration configuration
-            )
+        public Startup(IConfiguration configuration)
         {
-            this.Configuration = configuration;
+            Configuration = configuration;
         }
 
         // Configuracion de los servicios
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // agregando los Controladores
-            services.AddControllers();
-            services.AddEndpointsApiExplorer();
+            services.AddControllers(); // agregando los Controladores
+            services.AddEndpointsApiExplorer();         
+            services.AddSwaggerGen(); // agregando Swagger al Proyecto
 
-            // agregando Swagger al Proyecto
-            services.AddSwaggerGen();
-
-            // agregando el Http Contex
-            // Utilizado para la validacion con identity en Audit 
-            services.AddHttpContextAccessor();
-
-            // agregando parte de la Configuracion de Conexion a la Base de datos
-            var name = Configuration.GetConnectionString("DefaultConnection");
+            services.AddControllers().AddNewtonsoftJson(options => // Añadir Controladores con Newtonsoft.Json (del pack: Microsoft.AspNetCore.Mvc.NewtonsoftJson)
+            {
+                options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; // Esto le indica a Newtonsoft.Json que ignore las referencias cíclicas durante la serialización.
+            });
 
             //Agregando el DbContext
             services.AddDbContext<FernandaRentalsContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            // Agregando los Custom Services
-            //services.AddTransient< INTERFAZ, SERVICIO>();
+            // Add custom services
+            services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<ICategoryProductService, CategoryProductService>();
+            services.AddTransient<INoteService, NotesService>();
+            services.AddTransient<IClientTypeService, ClientTypeService>();
+            services.AddTransient<IEventService, EventsService>();
+            services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IAuditService, AuditService>();
+            services.AddTransient<IAdminService, AdminService>();
+            services.AddTransient<IClientService, ClientService>();
 
 
-            // Agregando Identity 
             // Add Identity
             services.AddIdentity<UserEntity, IdentityRole>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
             }).AddEntityFrameworkStores<FernandaRentalsContext>()
               .AddDefaultTokenProviders();
+
+            // Registrar TokenValidationParameters como Singleton
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = false,
+                ValidAudience = Configuration["JWT:ValidAudience"],
+                ValidIssuer = Configuration["JWT:ValidIssuer"],
+                ClockSkew = TimeSpan.Zero,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
+            };
+            services.AddSingleton(tokenValidationParameters);
+
             // agregando el servicio de Autentificacion mediante Token Bearer
             services.AddAuthentication(options =>
             {
@@ -67,18 +80,14 @@ namespace FernandaRentals
             {
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = false;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = false,
-                    ValidAudience = Configuration["JWT:ValidAudience"],
-                    ValidIssuer = Configuration["JWT:ValidIssuer"],
-                    ClockSkew = TimeSpan.Zero,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
+                options.TokenValidationParameters = tokenValidationParameters;
                     // agregando la configuracion del secreto o firma del Token 
-                };
             });
 
+            services.AddAuthorization();
+            // agregando el Http Contex
+            // Utilizado para la validacion con identity en Audit 
+            services.AddHttpContextAccessor();
 
             // Add AutoMapper
             services.AddAutoMapper(typeof(AutoMapperProfile));

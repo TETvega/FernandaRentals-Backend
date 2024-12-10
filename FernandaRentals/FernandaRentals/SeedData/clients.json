@@ -10,6 +10,16 @@
     "ClientTypeId": "a1f5e93b-6d4f-4f91-9a3d-0b8e6f1b8e16"
   },
   {
+    "Id": "4bf06874-0af7-4342-9539-4094ae626b9f",
+    "UserId": "dcf71a2c-d287-4b4a-b16a-f4e380f59959", // Ruth
+    "ClientTypeId": "a1f5e93b-6d4f-4f91-9a3d-0b8e6f1b8e16"
+  },
+  {
+    "Id": "0ee18dfe-f03f-4e05-a5a9-510e1066c2fa",
+    "UserId": "17a4c7c8-60aa-4d88-9900-666a4ae59ea3", // Naara
+    "ClientTypeId": "a1f5e93b-6d4f-4f91-9a3d-0b8e6f1b8e16"
+  },
+  {
     "Id": "3d952d76-9598-4184-b5ef-951bf9451aec",
     "UserId": "8f5046cf-d8ee-49ac-a0b0-7b1328bde15f", //Siscomp
     "ClientTypeId": "b6f0d3a7-3e17-4c5d-9b3e-7a1d7e2fbb19"

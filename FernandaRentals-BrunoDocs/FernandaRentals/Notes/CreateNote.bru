@@ -1,0 +1,29 @@
+meta {
+  name: CreateNote
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{PATH}}/notes
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{TOKEN}}
+}
+
+body:json {
+      {
+        "name": "{{NAME}}",
+        "eventId": "{{EVENT_ID}}",
+        "description": "{{DESCRIPTION}}"
+      }
+}
+
+vars:pre-request {
+  NAME: nueva nota 2
+  EVENT_ID: 41ee2270-4f2c-4ea2-9338-08dd16c9d8f7
+  DESCRIPTION: everyWord 2
+}

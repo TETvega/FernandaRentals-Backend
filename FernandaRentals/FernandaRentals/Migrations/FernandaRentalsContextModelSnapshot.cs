@@ -36,9 +36,6 @@ namespace FernandaRentals.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("created_by");
 
-                    b.Property<string>("CreatedByUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2")
                         .HasColumnName("created_date");
@@ -48,13 +45,15 @@ namespace FernandaRentals.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("description");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
+
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("updated_by");
-
-                    b.Property<string>("UpdatedByUserId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2")
@@ -62,11 +61,11 @@ namespace FernandaRentals.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedByUserId");
+                    b.HasIndex("CreatedBy");
 
-                    b.HasIndex("UpdatedByUserId");
+                    b.HasIndex("UpdatedBy");
 
-                    b.ToTable("category_product", "dbo");
+                    b.ToTable("categories_product", "dbo");
                 });
 
             modelBuilder.Entity("FernandaRentals.Database.Entities.ClientEntity", b =>
@@ -77,31 +76,31 @@ namespace FernandaRentals.Migrations
                         .HasColumnName("id");
 
                     b.Property<Guid>("ClientTypeId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("client_type_id");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("created_date");
 
                     b.Property<string>("UpdatedBy")
-                        .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("updated_date");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("user_id");
 
                     b.HasKey("Id");
 
@@ -124,19 +123,17 @@ namespace FernandaRentals.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("created_date");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("description");
 
                     b.Property<decimal>("Discount")
@@ -144,14 +141,18 @@ namespace FernandaRentals.Migrations
                         .HasColumnType("decimal(18,2)")
                         .HasColumnName("discount");
 
-                    b.Property<string>("UpdatedBy")
+                    b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("UpdatedBy")
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id");
@@ -160,7 +161,7 @@ namespace FernandaRentals.Migrations
 
                     b.HasIndex("UpdatedBy");
 
-                    b.ToTable("client_type", "dbo");
+                    b.ToTable("clients_type", "dbo");
                 });
 
             modelBuilder.Entity("FernandaRentals.Database.Entities.DetailEntity", b =>
@@ -171,13 +172,12 @@ namespace FernandaRentals.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("created_date");
 
                     b.Property<Guid>("EventId")
@@ -189,21 +189,25 @@ namespace FernandaRentals.Migrations
                         .HasColumnName("product_id");
 
                     b.Property<int>("Quantity")
+                        .HasPrecision(18, 2)
                         .HasColumnType("int")
                         .HasColumnName("quantity");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("total_price");
 
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,2)")
                         .HasColumnName("unit_price");
 
                     b.Property<string>("UpdatedBy")
-                        .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id");
@@ -216,7 +220,7 @@ namespace FernandaRentals.Migrations
 
                     b.HasIndex("UpdatedBy");
 
-                    b.ToTable("detail", "dbo");
+                    b.ToTable("events_details", "dbo");
                 });
 
             modelBuilder.Entity("FernandaRentals.Database.Entities.EventEntity", b =>
@@ -227,45 +231,64 @@ namespace FernandaRentals.Migrations
                         .HasColumnName("id");
 
                     b.Property<Guid>("ClientId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("user_id");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("created_date");
 
                     b.Property<decimal>("Discount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("discount");
 
                     b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("end_date");
 
                     b.Property<decimal>("EventCost")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("subtotal");
 
                     b.Property<string>("Location")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("location");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("PaypalCaptureId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("paypal_capture_id");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("start_date");
 
                     b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("total");
 
                     b.Property<string>("UpdatedBy")
-                        .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id");
@@ -276,7 +299,7 @@ namespace FernandaRentals.Migrations
 
                     b.HasIndex("UpdatedBy");
 
-                    b.ToTable("event", "dbo");
+                    b.ToTable("events", "dbo");
                 });
 
             modelBuilder.Entity("FernandaRentals.Database.Entities.NoteEntity", b =>
@@ -285,6 +308,15 @@ namespace FernandaRentals.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("id");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_date");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -296,15 +328,29 @@ namespace FernandaRentals.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("event_id");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
-                        .HasColumnName("title");
+                        .HasColumnName("name");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("updated_by");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_date");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatedBy");
+
                     b.HasIndex("EventId");
 
-                    b.ToTable("notes", "dbo");
+                    b.HasIndex("UpdatedBy");
+
+                    b.ToTable("events_notes", "dbo");
                 });
 
             modelBuilder.Entity("FernandaRentals.Database.Entities.ProductEntity", b =>
@@ -315,42 +361,51 @@ namespace FernandaRentals.Migrations
                         .HasColumnName("id");
 
                     b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("category_id");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("created_date");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(501)
-                        .HasColumnType("nvarchar(501)");
+                        .HasColumnType("nvarchar(501)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("price");
 
                     b.Property<int>("Stock")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("stock");
 
                     b.Property<string>("UpdatedBy")
-                        .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("updated_date");
 
                     b.Property<string>("UrlImage")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("url_image");
 
                     b.HasKey("Id");
 
@@ -360,7 +415,7 @@ namespace FernandaRentals.Migrations
 
                     b.HasIndex("UpdatedBy");
 
-                    b.ToTable("product", "dbo");
+                    b.ToTable("products", "dbo");
                 });
 
             modelBuilder.Entity("FernandaRentals.Database.Entities.ReservationEntity", b =>
@@ -370,17 +425,14 @@ namespace FernandaRentals.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("id");
 
-                    b.Property<int>("Count")
-                        .HasColumnType("int")
+                    b.Property<decimal>("Count")
+                        .HasColumnType("decimal(18,2)")
                         .HasColumnName("count");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("created_by");
-
-                    b.Property<string>("CreatedByUserId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2")
@@ -394,6 +446,11 @@ namespace FernandaRentals.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("event_id");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
+
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("product_id");
@@ -403,24 +460,21 @@ namespace FernandaRentals.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("updated_by");
 
-                    b.Property<string>("UpdatedByUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_date");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedByUserId");
+                    b.HasIndex("CreatedBy");
 
                     b.HasIndex("EventId");
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("UpdatedByUserId");
+                    b.HasIndex("UpdatedBy");
 
-                    b.ToTable("reservation", "dbo");
+                    b.ToTable("product_reservations", "dbo");
                 });
 
             modelBuilder.Entity("FernandaRentals.Database.Entities.UserEntity", b =>
@@ -637,11 +691,13 @@ namespace FernandaRentals.Migrations
                 {
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "CreatedByUser")
                         .WithMany()
-                        .HasForeignKey("CreatedByUserId");
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "UpdatedByUser")
                         .WithMany()
-                        .HasForeignKey("UpdatedByUserId");
+                        .HasForeignKey("UpdatedBy")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("CreatedByUser");
 
@@ -653,25 +709,23 @@ namespace FernandaRentals.Migrations
                     b.HasOne("FernandaRentals.Database.Entities.ClientTypeEntity", "ClientType")
                         .WithMany()
                         .HasForeignKey("ClientTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("ClientType");
@@ -688,14 +742,12 @@ namespace FernandaRentals.Migrations
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("CreatedByUser");
 
@@ -707,26 +759,24 @@ namespace FernandaRentals.Migrations
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("FernandaRentals.Database.Entities.EventEntity", "Event")
                         .WithMany("EventDetails")
                         .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("FernandaRentals.Database.Entities.ProductEntity", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("CreatedByUser");
 
@@ -742,20 +792,18 @@ namespace FernandaRentals.Migrations
                     b.HasOne("FernandaRentals.Database.Entities.ClientEntity", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Client");
 
@@ -766,13 +814,27 @@ namespace FernandaRentals.Migrations
 
             modelBuilder.Entity("FernandaRentals.Database.Entities.NoteEntity", b =>
                 {
+                    b.HasOne("FernandaRentals.Database.Entities.UserEntity", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("FernandaRentals.Database.Entities.EventEntity", "Event")
                         .WithMany()
                         .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("FernandaRentals.Database.Entities.UserEntity", "UpdatedByUser")
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("CreatedByUser");
+
                     b.Navigation("Event");
+
+                    b.Navigation("UpdatedByUser");
                 });
 
             modelBuilder.Entity("FernandaRentals.Database.Entities.ProductEntity", b =>
@@ -780,20 +842,18 @@ namespace FernandaRentals.Migrations
                     b.HasOne("FernandaRentals.Database.Entities.CategoryProductEntity", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Category");
 
@@ -806,23 +866,25 @@ namespace FernandaRentals.Migrations
                 {
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "CreatedByUser")
                         .WithMany()
-                        .HasForeignKey("CreatedByUserId");
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("FernandaRentals.Database.Entities.EventEntity", "Event")
                         .WithMany()
                         .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("FernandaRentals.Database.Entities.ProductEntity", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", "UpdatedByUser")
                         .WithMany()
-                        .HasForeignKey("UpdatedByUserId");
+                        .HasForeignKey("UpdatedBy")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("CreatedByUser");
 
@@ -838,7 +900,7 @@ namespace FernandaRentals.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -847,7 +909,7 @@ namespace FernandaRentals.Migrations
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -856,7 +918,7 @@ namespace FernandaRentals.Migrations
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -865,13 +927,13 @@ namespace FernandaRentals.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -880,7 +942,7 @@ namespace FernandaRentals.Migrations
                     b.HasOne("FernandaRentals.Database.Entities.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 

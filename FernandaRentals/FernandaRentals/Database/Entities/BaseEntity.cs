@@ -1,31 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using InmobiliariaUNAH.Database.Entities;
 
 namespace FernandaRentals.Database.Entities
 {
-    public class BaseEntity
+    public class BaseEntity : AuditEntity
     {
         [Key]
         [Column("id")]
         public Guid Id { get; set; }
 
-        [StringLength(450)]
-        [Column("created_by")]
-        public string CreatedBy { get; set; }
-
-        [Column("created_date")]
-        public DateTime CreatedDate { get; set; }
-
-        [StringLength(450)]
-        [Column("updated_by")]
-        public string UpdatedBy { get; set; }
-
-        [Column("updated_date")]
-        public DateTime UpdatedDate { get; set; }
-
-        // las comunes del campo de auditoria
-        public virtual UserEntity CreatedByUser { get; set; }
-        public virtual UserEntity UpdatedByUser { get; set; }
+        [Display(Name = "Nombre")]
+        [Required(ErrorMessage = "El {0} de la categoria es requerido.")]
+        [Column("name")]
+        public string Name { get; set; }
 
     }
 }

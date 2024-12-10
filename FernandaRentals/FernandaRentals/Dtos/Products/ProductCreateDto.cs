@@ -33,8 +33,8 @@ namespace FernandaRentals.Dtos.Products
         public int Stock { get; set; }
 
 
-        [Display(Name = "Costo")]
+        [Display(Name = "precio")]
         [Required(ErrorMessage = "El {0} es obligatorio.")]
-        public decimal Cost { get; set; }
+        public decimal Price { get; set; }
     }
 }

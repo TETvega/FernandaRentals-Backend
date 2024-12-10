@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FernandaRentals.Database.Entities
 {
-    [Table("category_product", Schema = "dbo")]
+    [Table("categories_product", Schema = "dbo")]
     public class CategoryProductEntity : BaseEntity
     {
         [Display(Name = "Descripción")]
@@ -14,5 +14,9 @@ namespace FernandaRentals.Database.Entities
         public string Description { get; set; }
 
         public virtual IEnumerable<ProductDtoForCategoryProduct> ProductsOfCategory { get; set; }
+
+        // las comunes del campo de auditoria
+        public virtual UserEntity CreatedByUser { get; set; }
+        public virtual UserEntity UpdatedByUser { get; set; }
     }
 }

@@ -1,0 +1,25 @@
+meta {
+  name: EditNote!
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{PATH}}/notes
+  body: json
+  auth: none
+}
+
+body:json {
+      {
+        "name": "{{NAME}}",
+        "eventId": "{{EVENT_ID}}",
+        "description": "{{DESCRIPTION}}"
+      }
+}
+
+vars:pre-request {
+  NAME: LIGHT AGAIN!
+  EVENT_ID: 41ee2270-4f2c-4ea2-9338-08dd16c9d8f7
+  DESCRIPTION: Lil Nas X
+}

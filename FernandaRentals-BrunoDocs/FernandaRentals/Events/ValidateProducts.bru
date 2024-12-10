@@ -1,0 +1,49 @@
+meta {
+  name: ValidateProducts
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{PATH}}/eventos/validate-products
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{TOKEN}}
+}
+
+body:json {
+  {
+    "eventStartDate": "2024-12-06",
+    "eventEndDate": "2024-12-07",
+    "products": [
+      {
+        "productId": "b9f40598-3948-45b5-857a-727a481c45b9",
+        "quantity": 3
+      },
+      {
+        "productId": "71c29fb2-d8fb-4eeb-80a5-829c2d4d1e36",
+        "quantity": 2
+      },
+      {
+        "productId": "5bb29d56-d917-4045-84a4-431bc48b74fc",
+        "quantity": 2
+      },
+      {
+        "productId": "3d6f03b7-02fc-4f0f-89db-b649ed8c4ccf",
+        "quantity": 2
+      },
+      {
+        "productId": "d01c78d4-3e7d-4d4d-bfee-749d5f78d66f",
+        "quantity": 1
+      }
+    ]
+  }
+}
+
+vars:pre-request {
+  STARTDATE: 2024-12-12
+  ENDDATE: 2024-12-14
+}
