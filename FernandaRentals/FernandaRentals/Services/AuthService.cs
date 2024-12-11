@@ -156,6 +156,18 @@ namespace FernandaRentals.Services
                 var userEntity = await _userManager.FindByEmailAsync(dto.Email);
                 await _userManager.AddToRoleAsync(userEntity, RolesConstants.CLIENT);
 
+
+                //var clientTypeEntity = await _context.Clients
+                //    .Where(c => c.UserId == userEntity.Id)
+                //    .Select(c => _context.TypesOfClient
+                //        .Where(tc => tc.Id == c.ClientTypeId)
+                //        .FirstOrDefault())
+                //    .FirstOrDefaultAsync();
+
+                
+
+
+
                 // verificacin de tipo de cliente
                 var clientTypeEntity = await _context.TypesOfClient.FindAsync(dto.ClientTypeId);
                 if (clientTypeEntity == null)
@@ -168,6 +180,9 @@ namespace FernandaRentals.Services
                         Message = "No se ha encontrado el tipo de cliente especificado."
                     };
                 }
+
+                var clientTypeDto = _mapper.Map<ClientTypeDto>(clientTypeEntity);
+
 
                 // Creación de ClientEntity
                 var clientEntity = new ClientEntity
@@ -210,10 +225,12 @@ namespace FernandaRentals.Services
                     Message = "Registro de usuario realizado satisfactoriamente.",
                     Data = new LoginResponseDto
                     {
+                        Name = userEntity.Name,
                         Email = userEntity.Email,
-                        Token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
+                        Token = new JwtSecurityTokenHandler().WriteToken(jwtToken), // convertir token en string
                         TokenExpiration = jwtToken.ValidTo,
-                        RefreshToken = refreshToken
+                        RefreshToken = refreshToken,
+                        ClientType = clientTypeDto
                     }
                 };
             }

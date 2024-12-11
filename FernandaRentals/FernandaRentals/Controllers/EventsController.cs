@@ -77,7 +77,7 @@ namespace FernandaRentals.Controllers
         }
 
         [HttpPost("validate-products")]
-        [Authorize(Roles = $"{RolesConstants.ADMIN}, {RolesConstants.CLIENT}")]
+        //[Authorize(Roles = $"{RolesConstants.ADMIN}, {RolesConstants.CLIENT}")]
         public async Task<ActionResult<ResponseDto<List<ProductAvailabilityError>>>> ValidateProducts (ProductAvailabilityDto dto)
         {
             var response = await _eventService.ValidateProductDatesWithAvailability(dto);
