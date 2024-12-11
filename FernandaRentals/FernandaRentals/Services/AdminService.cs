@@ -11,6 +11,7 @@ using FernandaRentals.Dtos.Events;
 using InmobiliariaUNAH.Helpers;
 using FernandaRentals.Dtos.Admin;
 using FernandaRentals.Dtos.Auth;
+using FernandaRentals.Dtos.DashBoard.StadisticsDtos;
 
 namespace FernandaRentals.Services
 {
@@ -77,10 +78,233 @@ namespace FernandaRentals.Services
                         // Puedes agregar otras propiedades relacionadas si son necesarias
                     })
                     .OrderBy(dashboardEvent => dashboardEvent.StartDate) // Ordena por fecha más cercana
-    .ToListAsync();
+                    .ToListAsync();
 
 
                 int totalUpcomingEvents = upcomingEventsDashboard.Count();
+
+
+                //CALCULOS PARA LAS STADISTICAS --------------------------------------------------------------------------------------------------
+
+                // el total remunerado 4 meses
+                var grossProfit = await _context.Details
+                                        .Where(d => d.CreatedDate >= currentDate.AddMonths(-4) && d.CreatedDate <= currentDate)
+                                        .SumAsync(d => d.TotalPrice);
+
+                // el valor neto de los ultimos 4 meses agrupado por mes y year 
+                var NetProfitsAgruped = await _context.Details
+                                    .Where(d => d.CreatedDate >= currentDate.AddMonths(-4) && d.CreatedDate <= currentDate)
+                                    .GroupBy(d => new { Year = d.CreatedDate.Year, Month = d.CreatedDate.Month })
+                                    .Select(group => new
+                                    {
+                                        Year = group.Key.Year,
+                                        Month = group.Key.Month,
+                                        Profit = group.Sum(d => d.TotalPrice)
+                                    })
+                                    .OrderBy(dto => dto.Year)
+                                    .ThenBy(dto => dto.Month)
+                                    .ToListAsync();
+
+                // mapeo de las fechas para un resulado limpio para anner en el frontend
+                var NetProfits = NetProfitsAgruped
+                            .Select(data => new MonthlyProfitDto
+                                 {
+                                     Month = $"{data.Month:00}-{data.Year}", // Formato MM-YYYY
+                                     Profit = data.Profit
+                                 })
+                             .ToList();
+
+                // ingresos brutos de los ultimos 4 mes
+                var BrutProfitsAgruped = await _context.Details
+                                    .Where(d => d.CreatedDate >= currentDate.AddMonths(-4) && d.CreatedDate <= currentDate)
+                                    // agrpar por mes y por año por si estamos en un nuevo , no cause problemas
+                                    .GroupBy(d => new { Year = d.CreatedDate.Year, Month = d.CreatedDate.Month })
+                                    // aqui se formatea para optener todo de una sola vez
+                                    .Select(group => new 
+                                    {
+                                        Year = group.Key.Year,
+                                        Month = group.Key.Month, 
+                                        Profit = group.Sum(d => d.UnitPrice * d.Quantity )
+                                    })
+                                    .OrderBy(dto => dto.Month)
+                                    .ToListAsync();
+                // mapeo de las fechas
+                var BrutProfits = BrutProfitsAgruped
+                           .Select(data => new MonthlyProfitDto
+                           {
+                               Month = $"{data.Month:00}-{data.Year}", // Formato MM-YYYY
+                               Profit = data.Profit
+                           })
+                            .ToList();
+
+
+                // para el grafico en pastel 
+                // el total de productos con su remuneracion totales de todos
+                var productRevenues = await _context.Details
+                                     .Where(d => d.CreatedDate >= currentDate.AddMonths(-4) && d.CreatedDate <= currentDate)
+                                     .GroupBy(d => d.Product.Name)  // esta sera la llave 
+                                     .Select(group => new ProductRevenueDto
+                                          {
+                                              Product = group.Key, // Nombre del producto 
+                                              Revenue = group.Sum(d => d.TotalPrice) // Suma de los ingresos
+                                           })
+                                     .OrderByDescending(dto => dto.Revenue) // Ordenar por ingresos descendente para que sea mas acil el agregar a otros
+                                     .ToListAsync();
+
+                //Sacar solo los 10 mas importantes
+                var topProducts = productRevenues.Take(10).ToList();
+
+                var otherProductsRevenue = productRevenues.Skip(10)
+                    .Any()? productRevenues.Skip(10).Sum(p => p.Revenue): 0;
+                // Sumar los demas despues de los 10 primeros si es que hay mas 
+                // y suma lo almacenado y si no pone en 0
+
+                // si es que hay mas de 0 despues de los primeros 10 
+                // se agrega otros con el total de las ri=umas de los restanmtes despues de los 10 
+                if (otherProductsRevenue > 0)
+                {
+                    topProducts.Add(new ProductRevenueDto
+                    {
+                        Product = "Otros",
+                        Revenue = otherProductsRevenue
+                    });
+                }
+                
+
+                var DasboardStadistics = new DashboardStatisticsDto
+                {
+                    GrossProfit = grossProfit,
+                    GrossProfitByMonth = BrutProfits,
+                    NetProfitByMonth = NetProfits,
+                    ProductsRevenueDistribution = topProducts
+
+                };
+                // FIN DE LAS ESTADISTICAS
+
+
+                //------------------------------- topProducts  DEL DASBOARD ------------------------------------
+
+                // Calculo de los mas solicitado ultimo 4 meses
+                var topRequestedProducts = await _context.Details
+                    .Where(d => d.CreatedDate >= currentDate.AddMonths(-4) && d.CreatedDate <= currentDate) 
+                    .GroupBy(d => d.Product.Name) 
+                    .Select(group => new TopProductDto
+                    {
+                        Product = group.Key, 
+                        Count = group.Sum(d => d.Quantity) 
+                    })
+                    .OrderByDescending(dto => dto.Count) 
+                    .Take(3)
+                    .ToListAsync();
+
+
+
+
+                // productos menos solicitados 
+                var leastRequestedProducts = await _context.Details
+                    .Where(d => d.CreatedDate >= currentDate.AddMonths(-4) && d.CreatedDate <= currentDate) 
+                    .GroupBy(d => d.Product.Name) 
+                    .Select(group => new TopProductDto
+                    {
+                        Product = group.Key,
+                        Count = group.Sum(d => d.Quantity) 
+                    })
+                    .OrderBy(dto => dto.Count) 
+                    .Take(3) 
+                    .ToListAsync();
+
+                // productos con mas ingresos 
+                var topRevenueProducts = await _context.Details
+                    .Where(d => d.CreatedDate >= currentDate.AddMonths(-4) && d.CreatedDate <= currentDate) 
+                    .GroupBy(d => d.Product.Name) 
+                    .Select(group => new TopProductDto
+                    {
+                        Product = group.Key, 
+                        Revenue = group.Sum(d => d.TotalPrice) 
+                    })
+                    .OrderByDescending(dto => dto.Revenue) 
+                    .Take(3) 
+                    .ToListAsync();
+
+                var tops = new DashboardTopsDto 
+                { 
+                    TopRevenueProducts = topRevenueProducts,
+                    LeastRequestedProducts = leastRequestedProducts,
+                    TopRequestedProducts = topRequestedProducts,
+                };
+                // ----------------------------------->>>>>>>>>>>> TERMINA LOS TOPS 3 PRODUCTOS 
+
+                // ------------------------------------------------------- COMPARACIONES UTILES 
+
+
+
+                
+
+                // Clientes
+                // 7 dias 
+                var clientsLast7Days = await _context.Clients
+                    .Where(c => c.CreatedDate >= currentDate.AddDays(-7) && c.CreatedDate <= currentDate)
+                    .CountAsync();
+                // 14 dias atras
+                var clientsPrevious7Days = await _context.Clients
+                    .Where(c => c.CreatedDate >= currentDate.AddDays(-14) && c.CreatedDate < currentDate.AddDays(-7))
+                    .CountAsync(); 
+
+
+                // Productos
+                // 7 dias
+                var productsLast7Days = await _context.Products
+                    .Where(p => p.CreatedDate >= currentDate.AddDays(-7) && p.CreatedDate <= currentDate)
+                    .CountAsync(); 
+                // 14 dias
+                var productsPrevious7Days = await _context.Products
+                    .Where(p => p.CreatedDate >= currentDate.AddDays(-14) && p.CreatedDate < currentDate.AddDays(-7))
+                    .CountAsync(); 
+
+                // eventos 
+                // 7 dias
+                var eventsLast7Days = await _context.Events
+                    .Where(e => e.CreatedDate >= currentDate.AddDays(-7) && e.CreatedDate <= currentDate)
+                    .CountAsync(); 
+                // 14 dias
+                var eventsPrevious7Days = await _context.Events
+                    .Where(e => e.CreatedDate >= currentDate.AddDays(-14) && e.CreatedDate < currentDate.AddDays(-7))
+                    .CountAsync(); 
+
+                
+
+                // Llenar los objetos TComparation
+                var ClientComparation = new TComparation
+                {
+                    NewTLast7Days= clientsLast7Days,
+                    NewTPrevious7Days= clientsPrevious7Days,
+                    PercentageChange = CalculatePercentageChange(clientsLast7Days, clientsPrevious7Days),
+                    Message = MessageChange(clientsLast7Days, clientsPrevious7Days)
+                };
+
+                var ProductsComparation = new TComparation
+                {
+                    NewTLast7Days = productsLast7Days,
+                    NewTPrevious7Days = productsPrevious7Days,
+                    PercentageChange = CalculatePercentageChange(productsLast7Days, productsPrevious7Days),
+                    Message = MessageChange(productsLast7Days, productsPrevious7Days)
+                };
+
+                var EventsComparation = new TComparation
+                {
+                    NewTLast7Days = eventsLast7Days,
+                    NewTPrevious7Days = eventsPrevious7Days,
+                    PercentageChange = CalculatePercentageChange(eventsLast7Days, eventsPrevious7Days),
+                    Message = MessageChange(eventsLast7Days, eventsPrevious7Days)
+                };
+
+                var comparation = new DashboardComparationDto
+                {
+                    ClientComparation = ClientComparation,
+                    ProductsComparation = ProductsComparation,
+                    EventsComparation = EventsComparation
+                };
+                // ------------------------------------ FIN DE LAS COMPARACIONES
 
 
                 var dashboardDto = new DashBoardDto
@@ -88,7 +312,10 @@ namespace FernandaRentals.Services
                     TotalProducts = totalProducts,
                     TotalClients = totalClients,
                     TotalUpcomingEvents = totalUpcomingEvents,
-                    UpcomingEvents = upcomingEventsDashboard
+                    UpcomingEvents = upcomingEventsDashboard,
+                    Statistics = DasboardStadistics,
+                    Tops = tops,
+                    Comparisons = comparation,
                 };
                 return ResponseHelper.ResponseSuccess<DashBoardDto>(200, $"{MessagesConstant.RECORDS_FOUND}", dashboardDto);
             }
@@ -296,7 +523,40 @@ namespace FernandaRentals.Services
         }
 
 
+        public decimal CalculatePercentageChange(int currentValue, int previous)
+        {
+            if (previous == 0) return 0;
+
+            var change = Math.Round(((decimal)(currentValue - previous) / previous) * 100, 5);
+            return change;
+        }
+
+        public string MessageChange(int currentValue, int previous)
+
+        {
+            var Message = "";
+
+            if (previous == 0)
+            {
+                Message = $"infinite%";
+            };
+
+            if (previous == currentValue)
+            {
+                Message = $"Sin Cambios";
+            };
 
 
+
+            if (previous > currentValue) {
+                Message = $"{Message} Disminucion";
+            };
+
+            if (previous < currentValue)
+            {
+                Message = $"{Message} Aumento";
+            }
+            return Message;
+        }
     }
 }
