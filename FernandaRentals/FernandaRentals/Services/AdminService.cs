@@ -191,7 +191,8 @@ namespace FernandaRentals.Services
                     .Select(group => new TopProductDto
                     {
                         Product = group.Key, 
-                        Count = group.Sum(d => d.Quantity) 
+                        Count = group.Sum(d => d.Quantity),
+                        Revenue = group.Sum(d => d.TotalPrice)
                     })
                     .OrderByDescending(dto => dto.Count) 
                     .Take(3)
@@ -207,7 +208,8 @@ namespace FernandaRentals.Services
                     .Select(group => new TopProductDto
                     {
                         Product = group.Key,
-                        Count = group.Sum(d => d.Quantity) 
+                        Count = group.Sum(d => d.Quantity),
+                        Revenue = group.Sum(d => d.TotalPrice)
                     })
                     .OrderBy(dto => dto.Count) 
                     .Take(3) 
@@ -220,7 +222,8 @@ namespace FernandaRentals.Services
                     .Select(group => new TopProductDto
                     {
                         Product = group.Key, 
-                        Revenue = group.Sum(d => d.TotalPrice) 
+                        Count = group.Sum(d => d.Quantity),
+                        Revenue = group.Sum(d => d.TotalPrice),
                     })
                     .OrderByDescending(dto => dto.Revenue) 
                     .Take(3) 
@@ -259,19 +262,19 @@ namespace FernandaRentals.Services
                 // 14 dias
                 var productsPrevious7Days = await _context.Products
                     .Where(p => p.CreatedDate >= currentDate.AddDays(-14) && p.CreatedDate < currentDate.AddDays(-7))
-                    .CountAsync(); 
+                    .CountAsync();
 
                 // eventos 
-                // 7 dias
+                // 7 dias atras
                 var eventsLast7Days = await _context.Events
-                    .Where(e => e.CreatedDate >= currentDate.AddDays(-7) && e.CreatedDate <= currentDate)
-                    .CountAsync(); 
-                // 14 dias
-                var eventsPrevious7Days = await _context.Events
-                    .Where(e => e.CreatedDate >= currentDate.AddDays(-14) && e.CreatedDate < currentDate.AddDays(-7))
-                    .CountAsync(); 
+                    .Where(e => e.StartDate >= currentDate.AddDays(-7) && e.StartDate <= currentDate)
+                    .CountAsync();
 
-                
+                // proximos 7 dias
+                var eventsNext7Days = await _context.Events
+                    .Where(e => e.StartDate > currentDate && e.StartDate <= currentDate.AddDays(7))
+                    .CountAsync();
+
 
                 // Llenar los objetos TComparation
                 var ClientComparation = new TComparation
@@ -292,10 +295,10 @@ namespace FernandaRentals.Services
 
                 var EventsComparation = new TComparation
                 {
-                    NewTLast7Days = eventsLast7Days,
-                    NewTPrevious7Days = eventsPrevious7Days,
-                    PercentageChange = CalculatePercentageChange(eventsLast7Days, eventsPrevious7Days),
-                    Message = MessageChange(eventsLast7Days, eventsPrevious7Days)
+                    NewTLast7Days = eventsNext7Days,
+                    NewTPrevious7Days = eventsLast7Days,
+                    PercentageChange = CalculatePercentageChange(eventsNext7Days, eventsLast7Days),
+                    Message = MessageChange(eventsNext7Days, eventsLast7Days)
                 };
 
                 var comparation = new DashboardComparationDto
@@ -549,12 +552,12 @@ namespace FernandaRentals.Services
 
 
             if (previous > currentValue) {
-                Message = $"{Message} Disminucion";
+                Message = $"{Message}% Disminucion";
             };
 
             if (previous < currentValue)
             {
-                Message = $"{Message} Aumento";
+                Message = $"{Message}% Aumento";
             }
             return Message;
         }
