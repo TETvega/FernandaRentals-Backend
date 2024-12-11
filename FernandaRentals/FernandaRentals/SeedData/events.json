@@ -1,7 +1,7 @@
 [
   {
     "Id": "a1b2c3d4-e5f6-4789-abcd-1234567890ab",
-    "Name": "Evento 1 Muerte de Paquito",
+    "Name": "Funeral Santiago Perez Ordonies",
     "ClientId": "4389611b-4bab-4e11-be4f-b392d5a6b55c",
     "StartDate": "2024-09-01T09:00:00",
     "EndDate": "2024-09-05T18:00:00",
@@ -10,6 +10,7 @@
     "EventCost": 1050.00,
     "Discount": 50.00,
     "Total": 1000.00,
+    "PaypalCaptureId": "aedfaae1-db42-4e7c-a77f-657b2cdcbdf7",
     "EventDetails": [
       {
         "Id": "e1f2a3b4-5678-49ab-cdef-1234567890ab",
@@ -31,15 +32,16 @@
   },
   {
     "Id": "b2c3d4e5-f678-49ab-cdef-2345678901bc",
-    "Name": "Evento 2 Convencion HAKATON",
+    "Name": "Convencion HAKATON I",
     "ClientId": "3d952d76-9598-4184-b5ef-951bf9451aec",
-    "StartDate": "2024-09-10T10:00:00",
-    "EndDate": "2024-09-10T16:00:00",
+    "StartDate": "2024-11-10T10:00:00",
+    "EndDate": "2024-11-10T16:00:00",
     "Location": "Parque Central",
     "State": "Pendiente",
     "EventCost": 460.00,
     "Discount": 30.00,
     "Total": 430.00,
+    "PaypalCaptureId": "aedfaae1-db42-4e7c-a77f-657b2cdcbdf7",
     "EventDetails": [
       {
         "Id": "a3b4c5d6-7890-4bcd-ef23-3456789012cd",
@@ -61,15 +63,16 @@
   },
   {
     "Id": "c3d4e5f6-7890-4abc-def1-3456789012cd",
-    "Name": "Evento 2 Convencion HAKATON",
+    "Name": "Convencion HAKATON II",
     "ClientId": "3d952d76-9598-4184-b5ef-951bf9451aec",
-    "StartDate": "2024-10-15T14:00:00",
-    "EndDate": "2024-10-15T20:00:00",
+    "StartDate": "2024-11-15T14:00:00",
+    "EndDate": "2024-11-15T20:00:00",
     "Location": "Hotel Central",
     "State": "Confirmado",
     "EventCost": 360.00,
     "Discount": 80.00,
     "Total": 280.00,
+    "PaypalCaptureId": "aedfaae1-db42-4e7c-a77f-657b2cdcbdf7",
     "EventDetails": [
       {
         "Id": "c5d6e7f8-9012-4def-3456-5678901234ef",
@@ -84,7 +87,7 @@
   {
     "Id": "d4e5f678-9012-4bcd-ef23-4567890123de",
     "Name": "Premición a la Juventud",
-    "ClientId": "5db04822-c5a5-4f44-8c05-adb33cf274c8",
+    "ClientId": "4389611b-4bab-4e11-be4f-b392d5a6b55c",
     "StartDate": "2024-11-20T08:00:00",
     "EndDate": "2024-11-20T17:00:00",
     "Location": "Plaza Mayor",
@@ -92,9 +95,10 @@
     "EventCost": 850.00,
     "Discount": 40.00,
     "Total": 810.00,
+    "PaypalCaptureId": "aedfaae1-db42-4e7c-a77f-657b2cdcbdf7",
     "EventDetails": [
       {
-        "Id": "d6e7f890-1234-4ef5-4567-6789012345f0",
+        "Id": "d6e7f890-1234-4e45-4567-6789012345f0",
         "EventId": "d4e5f678-9012-4bcd-ef23-4567890123de",
         "ProductId": "b36a14c8-407b-4c36-a945-08f144f5f169",
         "Quantity": 5,
@@ -102,7 +106,7 @@
         "TotalPrice": 250.00
       },
       {
-        "Id": "e7f89012-3456-4f67-5678-7890123456f1",
+        "Id": "e7f89012-3456-4a67-5678-7890123456f1",
         "EventId": "d4e5f678-9012-4bcd-ef23-4567890123de",
         "ProductId": "1247cbb0-84d2-4f6b-8a76-cb41d49e348a",
         "Quantity": 24,
@@ -110,5 +114,106 @@
         "TotalPrice": 600.00
       }
     ]
+  },
+  {
+    "Id": "a3b2c3d4-e5f6-4789-abcd-1234567899ab",
+    "Name": "Festival de Invierno",
+    "ClientId": "4389611b-4bab-4e11-be4f-b392d5a6b55c",
+    "StartDate": "2024-10-10T10:00:00",
+    "EndDate": "2024-10-13T22:00:00",
+    "Location": "Estadio Nacional",
+    "State": "Pendiente",
+    "EventCost": 2500.00,
+    "Discount": 500.00,
+    "Total": 2000.00,
+    "PaypalCaptureId": "aedfaae1-db42-4e7c-a77f-657b2cdcbdf7",
+    "EventDetails": [
+      {
+        "Id": "e1f2a3b4-4678-47ab-cdef-1234567890ab",
+        "EventId": "a3b2c3d4-e5f6-4789-abcd-1234567899ab",
+        "ProductId": "91c0d5e9-1c4f-4509-b88e-32914dc0be83",
+        "Quantity": 20,
+        "UnitPrice": 50.00,
+        "TotalPrice": 1000.00
+      },
+      {
+        "Id": "f2a3b4c5-1798-4abc-def1-2345678901bc",
+        "EventId": "a3b2c3d4-e5f6-4789-abcd-1234567899ab",
+        "ProductId": "fa9a6c66-176e-42c6-bb5d-460d60d3a01f",
+        "Quantity": 20,
+        "UnitPrice": 50.00,
+        "TotalPrice": 1000.00
+      }
+    ]
+  },
+  {
+    "Id": "b2c3d4e5-f678-49ab-cdef-1145688901bc",
+    "Name": "5 Torneo de Verano",
+    "ClientId": "4389611b-4bab-4e11-be4f-b392d5a6b55c",
+    "StartDate": "2024-10-20T09:00:00",
+    "EndDate": "2024-10-21T17:00:00",
+    "Location": "Polideportivo Municipal",
+    "State": "Confirmado",
+    "EventCost": 1500.00,
+    "Discount": 300.00,
+    "Total": 1200.00,
+    "PaypalCaptureId": "aedfaae1-db42-4e7c-a77f-657b2cdcbdf7",
+    "EventDetails": [
+      {
+        "Id": "a3b4c5d6-7120-4bcd-ef23-3456789012cd",
+        "EventId": "b2c3d4e5-f678-49ab-cdef-1145688901bc",
+        "ProductId": "6f12f8c5-80f8-44f2-b25e-1779d4b3fd77",
+        "Quantity": 30,
+        "UnitPrice": 40.00,
+        "TotalPrice": 1200.00
+      }
+    ]
+  },
+  {
+    "Id": "c3d4e5f6-7890-4abc-def1-1256789066cd",
+    "Name": "Gala de Empresarios",
+    "ClientId": "4389611b-4bab-4e11-be4f-b392d5a6b55c",
+    "StartDate": "2024-12-11T18:00:00",
+    "EndDate": "2024-12-15T23:00:00",
+    "Location": "Hotel Five Stars",
+    "State": "Confirmado",
+    "EventCost": 1000.00,
+    "Discount": 100.00,
+    "Total": 900.00,
+    "PaypalCaptureId": "aedfaae1-db42-4e7c-a77f-657b2cdcbdf7",
+    "EventDetails": [
+      {
+        "Id": "c3d4e0f6-7890-4abc-def1-1256789066cd",
+        "EventId": "c3d4e5f6-7890-4abc-def1-3456789012cd",
+        "ProductId": "25be5a7f-5c43-4420-8236-2e44b7a0f9f4",
+        "Quantity": 10,
+        "UnitPrice": 90.00,
+        "TotalPrice": 900.00
+      }
+    ]
+  },
+  {
+    "Id": "d4e5f678-9012-4bcd-ef23-4567890333de",
+    "Name": "Feria Tecnológica",
+    "ClientId": "4389611b-4bab-4e11-be4f-b392d5a6b55c",
+    "StartDate": "2024-11-15T09:00:00",
+    "EndDate": "2024-11-15T18:00:00",
+    "Location": "Auditorio Principal",
+    "State": "Pendiente",
+    "EventCost": 2000.00,
+    "Discount": 0.00,
+    "Total": 2000.00,
+    "PaypalCaptureId": "aedfaae1-db42-4e7c-a77f-657b2cdcbdf7",
+    "EventDetails": [
+      {
+        "Id": "d6e7f690-1234-4ef5-4567-6789012345f0",
+        "EventId": "d4e5f678-9012-4bcd-ef23-4567890333de",
+        "ProductId": "d01c78d4-3e7d-4d4d-bfee-749d5f78d66f",
+        "Quantity": 20,
+        "UnitPrice": 100.00,
+        "TotalPrice": 2000.00
+      }
+    ]
   }
+
 ]
