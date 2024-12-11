@@ -8,5 +8,9 @@ namespace FernandaRentals.Dtos.DashBoard
         public int TotalUpcomingEvents { get; set; }
         public int TotalClients { get; set; }
         public List<DashboardUpcomingEvents> UpcomingEvents { get; set; }
+        public DashboardStatisticsDto Statistics { get; set; }
+        public DashboardTopsDto Tops { get; set; }
+        public DashboardComparationDto Comparisons { get; set; }
+
     }
 }
