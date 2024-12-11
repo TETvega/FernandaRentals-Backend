@@ -85,21 +85,23 @@ namespace FernandaRentals.Services
 
 
                 //CALCULOS PARA LAS STADISTICAS --------------------------------------------------------------------------------------------------
-
+                var currentMonth = $"{currentDate.Month:00}-{currentDate.Year}";
                 // el total remunerado 4 meses
-                var grossProfit = await _context.Details
-                                        .Where(d => d.CreatedDate >= currentDate.AddMonths(-4) && d.CreatedDate <= currentDate)
-                                        .SumAsync(d => d.TotalPrice);
+                var grossProfit = await _context.Events
+                                        .Where(d => d.StartDate >= currentDate.AddMonths(-4) && d.StartDate <= currentDate)
+                                        .SumAsync(e => e.Total);
+
+
 
                 // el valor neto de los ultimos 4 meses agrupado por mes y year 
-                var NetProfitsAgruped = await _context.Details
-                                    .Where(d => d.CreatedDate >= currentDate.AddMonths(-4) && d.CreatedDate <= currentDate)
-                                    .GroupBy(d => new { Year = d.CreatedDate.Year, Month = d.CreatedDate.Month })
+                var NetProfitsAgruped = await _context.Events
+                                    .Where(d => d.StartDate >= currentDate.AddMonths(-4) && d.StartDate <= currentDate)
+                                    .GroupBy(d => new { Year = d.StartDate.Year, Month = d.StartDate.Month })
                                     .Select(group => new
                                     {
                                         Year = group.Key.Year,
                                         Month = group.Key.Month,
-                                        Profit = group.Sum(d => d.TotalPrice)
+                                        Profit = group.Sum(d => d.Total)
                                     })
                                     .OrderBy(dto => dto.Year)
                                     .ThenBy(dto => dto.Month)
@@ -114,17 +116,34 @@ namespace FernandaRentals.Services
                                  })
                              .ToList();
 
+                // Verificar si el mes actual ya existe en la lista
+                if (!NetProfits.Any(bp => bp.Month == currentMonth))
+                {
+                    // Si no existe se agrega con 0 remuineracion 
+                    NetProfits.Add(new MonthlyProfitDto
+                    {
+                        Month = currentMonth,
+                        Profit = 0
+                    });
+                }
+
+                // Ordenar nuevamente la lista para mantener el orden correcto
+                NetProfits = NetProfits
+                    .OrderBy(bp => bp.Month) // Esto asegura que los meses estén en orden ascendente
+                    .ToList();
+
+
                 // ingresos brutos de los ultimos 4 mes
-                var BrutProfitsAgruped = await _context.Details
-                                    .Where(d => d.CreatedDate >= currentDate.AddMonths(-4) && d.CreatedDate <= currentDate)
+                var BrutProfitsAgruped = await _context.Events
+                                    .Where(d => d.StartDate >= currentDate.AddMonths(-4) && d.StartDate <= currentDate)
                                     // agrpar por mes y por año por si estamos en un nuevo , no cause problemas
-                                    .GroupBy(d => new { Year = d.CreatedDate.Year, Month = d.CreatedDate.Month })
+                                    .GroupBy(d => new { Year = d.StartDate.Year, Month = d.StartDate.Month })
                                     // aqui se formatea para optener todo de una sola vez
                                     .Select(group => new 
                                     {
                                         Year = group.Key.Year,
                                         Month = group.Key.Month, 
-                                        Profit = group.Sum(d => d.UnitPrice * d.Quantity )
+                                        Profit = group.Sum(d => d.EventCost)
                                     })
                                     .OrderBy(dto => dto.Month)
                                     .ToListAsync();
@@ -137,11 +156,26 @@ namespace FernandaRentals.Services
                            })
                             .ToList();
 
+                // Verificar si el mes actual ya existe en la lista
+                if (!BrutProfits.Any(bp => bp.Month == currentMonth))
+                {
+                    // Si no existe se agrega con 0 remuineracion 
+                    BrutProfits.Add(new MonthlyProfitDto
+                    {
+                        Month = currentMonth,
+                        Profit = 0
+                    });
+                }
+
+                // Ordenar nuevamente la lista para mantener el orden correcto
+                BrutProfits = BrutProfits
+                    .OrderBy(bp => bp.Month) // Esto asegura que los meses estén en orden ascendente
+                    .ToList();
 
                 // para el grafico en pastel 
                 // el total de productos con su remuneracion totales de todos
                 var productRevenues = await _context.Details
-                                     .Where(d => d.CreatedDate >= currentDate.AddMonths(-4) && d.CreatedDate <= currentDate)
+                                     .Where(d => d.Event.StartDate >= currentDate.AddMonths(-4) && d.Event.StartDate <= currentDate)
                                      .GroupBy(d => d.Product.Name)  // esta sera la llave 
                                      .Select(group => new ProductRevenueDto
                                           {
@@ -152,10 +186,10 @@ namespace FernandaRentals.Services
                                      .ToListAsync();
 
                 //Sacar solo los 10 mas importantes
-                var topProducts = productRevenues.Take(10).ToList();
+                var topProducts = productRevenues.Take(5).ToList();
 
-                var otherProductsRevenue = productRevenues.Skip(10)
-                    .Any()? productRevenues.Skip(10).Sum(p => p.Revenue): 0;
+                var otherProductsRevenue = productRevenues.Skip(5)
+                    .Any()? productRevenues.Skip(5).Sum(p => p.Revenue): 0;
                 // Sumar los demas despues de los 10 primeros si es que hay mas 
                 // y suma lo almacenado y si no pone en 0
 
